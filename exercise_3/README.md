@@ -19,7 +19,8 @@ GPIO A: 0x40000000
 `btn_direct_read_val = ((*(uint32_t *)0x40020010) >> 0) & 0x1;` shows 1 when the button is pressed, else 0
 
 ### Code Revisions
-**debounce**: Not required as the button is debounced with a capacitor XD
-**current commit:** is submitted with button toggling LED.
-**commit before:** button to deactivate Blinking
-**commit before:** button to toggles LED
+
+- **debounce**: Not required as the button is debounced with a capacitor XD
+- **current commit:** is submitted with button toggling LED.
+- **commit before:** button to deactivate Blinking
+- **commit before:** button to toggles LED
