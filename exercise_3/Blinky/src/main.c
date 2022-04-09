@@ -1,83 +1,34 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f429xx.h"
+#include <stdbool.h>
 
-// my LED
-
-// #define LED_PIN GPIO_PIN_5
-
-#define LED_PIN GPIO_PIN_13
-#define LED_GPIO_PORT GPIOG
-#define LED_GPIO_CLK_ENABLE() __HAL_RCC_GPIOA_CLK_ENABLE()
+// Custom functionalities
+#include "led.h"
+#include "button.h"
+#include "fault_handling.h"
 
 int main(void)
 {
+    bool blinking_active = false;
+
     HAL_Init();
 
-    __HAL_RCC_GPIOG_CLK_ENABLE();
-
-    LED_GPIO_CLK_ENABLE();
-
-    GPIO_InitTypeDef GPIO_InitStruct;
-
-    GPIO_InitStruct.Pin = LED_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-    HAL_GPIO_Init(LED_GPIO_PORT, &GPIO_InitStruct);
+    // Initialize peripherals
+    LED_Init();
+    Button_Init();
 
     while (1)
     {
-        HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_PIN);
+        if (blinking_active)
+        {
+            LED_Toggle();
+            HAL_Delay(100);
+        }
 
-        HAL_Delay(100);
+        if (Button_Pressed())
+        {
+            blinking_active = !blinking_active;
+            HAL_Delay(100); // lazy debounce
+        }
     }
-}
-
-void SysTick_Handler(void)
-{
-    HAL_IncTick();
-}
-
-void NMI_Handler(void)
-{
-}
-
-void HardFault_Handler(void)
-{
-    while (1)
-    {
-    }
-}
-
-void MemManage_Handler(void)
-{
-    while (1)
-    {
-    }
-}
-
-void BusFault_Handler(void)
-{
-    while (1)
-    {
-    }
-}
-
-void UsageFault_Handler(void)
-{
-    while (1)
-    {
-    }
-}
-
-void SVC_Handler(void)
-{
-}
-
-void DebugMon_Handler(void)
-{
-}
-
-void PendSV_Handler(void)
-{
 }
