@@ -78,6 +78,9 @@ Possible future features:
 - 3D-USB microphone with streaming of tracked sound locations
 - Multi object location tracking
 
+### Licenses
+[TODO add all used tools/libs licenses]
+
 ---
 
 <!-- # Troubles
