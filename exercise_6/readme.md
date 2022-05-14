@@ -50,6 +50,8 @@ Suggested IDE is **Visual Studio Code** IDE has a has useful extentions that hel
 
 After installation of these building and flashing can be triggered via `CMD+SHIFT+B`
 
+**Mark portions of code i did**
+
 ### How to power and debug
 - The discovery board comes with a ST-LINK coprocessor (Mini-USB) when connected to host computer, the USB provides power and a link to debug.
 
