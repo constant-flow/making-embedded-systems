@@ -36,6 +36,8 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
+Core/Src/al_display.c \
+Core/Src/al_led.c \
 Core/Src/console.c \
 Core/Src/consoleCommands.c \
 Core/Src/consoleIo.c \
@@ -57,6 +59,10 @@ Core/Src/stm32f4xx_it.c \
 Core/Src/system_stm32f4xx.c \
 Core/Src/tim.c \
 Core/Src/usart.c \
+Drivers/BSP/Components/otm8009a/otm8009a.c \
+Drivers/BSP/STM32469I-Discovery/stm32469i_discovery.c \
+Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_lcd.c \
+Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_sdram.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c \
@@ -211,13 +217,15 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DSTM32F469xx \
--DUSE_HAL_DRIVER
+-DUSE_HAL_DRIVER \
+-DUSE_STM32469I_DISCO_REVB
 
 
 # CXX defines
 CXX_DEFS =  \
 -DSTM32F469xx \
--DUSE_HAL_DRIVER
+-DUSE_HAL_DRIVER \
+-DUSE_STM32469I_DISCO_REVB
 
 
 # AS includes
@@ -226,6 +234,8 @@ AS_INCLUDES = \
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-IDrivers/BSP/Components/otm8009a \
+-IDrivers/BSP/STM32469I-Discovery \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
 -IDrivers/CMSIS/Include \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
@@ -241,7 +251,8 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/LibJPEG/include \
 -IPDM2PCM/App \
 -IUSB_HOST/App \
--IUSB_HOST/Target
+-IUSB_HOST/Target \
+-IUtilities/Fonts
 
 
 

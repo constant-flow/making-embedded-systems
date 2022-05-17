@@ -1,24 +1,25 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    dsihost.c
-  * @brief   This file provides code for the configuration
-  *          of the DSIHOST instances.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    dsihost.c
+ * @brief   This file provides code for the configuration
+ *          of the DSIHOST instances.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2022 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "dsihost.h"
+#include "stm32469i_discovery_lcd.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -90,6 +91,9 @@ void MX_DSIHOST_DSI_Init(void)
   {
     Error_Handler();
   }
+
+  OTM8009A_Init(OTM8009A_COLMOD_RGB888, LCD_ORIENTATION_LANDSCAPE);
+
   LPCmd.LPGenShortWriteNoP = DSI_LP_GSW0P_ENABLE;
   LPCmd.LPGenShortWriteOneP = DSI_LP_GSW1P_ENABLE;
   LPCmd.LPGenShortWriteTwoP = DSI_LP_GSW2P_ENABLE;
@@ -129,18 +133,17 @@ void MX_DSIHOST_DSI_Init(void)
   /* USER CODE BEGIN DSIHOST_Init 2 */
 
   /* USER CODE END DSIHOST_Init 2 */
-
 }
 
-void HAL_DSI_MspInit(DSI_HandleTypeDef* dsiHandle)
+void HAL_DSI_MspInit(DSI_HandleTypeDef *dsiHandle)
 {
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  if(dsiHandle->Instance==DSI)
+  if (dsiHandle->Instance == DSI)
   {
-  /* USER CODE BEGIN DSI_MspInit 0 */
+    /* USER CODE BEGIN DSI_MspInit 0 */
 
-  /* USER CODE END DSI_MspInit 0 */
+    /* USER CODE END DSI_MspInit 0 */
     /* DSI clock enable */
     __HAL_RCC_DSI_CLK_ENABLE();
 
@@ -158,20 +161,20 @@ void HAL_DSI_MspInit(DSI_HandleTypeDef* dsiHandle)
     /* DSI interrupt Init */
     HAL_NVIC_SetPriority(DSI_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(DSI_IRQn);
-  /* USER CODE BEGIN DSI_MspInit 1 */
+    /* USER CODE BEGIN DSI_MspInit 1 */
 
-  /* USER CODE END DSI_MspInit 1 */
+    /* USER CODE END DSI_MspInit 1 */
   }
 }
 
-void HAL_DSI_MspDeInit(DSI_HandleTypeDef* dsiHandle)
+void HAL_DSI_MspDeInit(DSI_HandleTypeDef *dsiHandle)
 {
 
-  if(dsiHandle->Instance==DSI)
+  if (dsiHandle->Instance == DSI)
   {
-  /* USER CODE BEGIN DSI_MspDeInit 0 */
+    /* USER CODE BEGIN DSI_MspDeInit 0 */
 
-  /* USER CODE END DSI_MspDeInit 0 */
+    /* USER CODE END DSI_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DSI_CLK_DISABLE();
 
@@ -182,9 +185,9 @@ void HAL_DSI_MspDeInit(DSI_HandleTypeDef* dsiHandle)
 
     /* DSI interrupt Deinit */
     HAL_NVIC_DisableIRQ(DSI_IRQn);
-  /* USER CODE BEGIN DSI_MspDeInit 1 */
+    /* USER CODE BEGIN DSI_MspDeInit 1 */
 
-  /* USER CODE END DSI_MspDeInit 1 */
+    /* USER CODE END DSI_MspDeInit 1 */
   }
 }
 

@@ -17,6 +17,9 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+
+/// BSP Documentation: https://documentation.help/STM32F469I-Discovery-BSP-Drivers
+
 #include "main.h"
 #include "crc.h"
 #include "dma2d.h"
@@ -35,6 +38,8 @@
 #include "gpio.h"
 #include "fmc.h"
 #include "console.h"
+#include "al_display.h"
+#include "al_led.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -137,8 +142,16 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  al_led_init();
+  al_display_init();
+
   while (1)
   {
+
+    al_led_green_toggle();
+    al_display_update();
+
     ConsoleProcess();
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
@@ -158,6 +171,8 @@ int main(void)
       sprintf(buffer, "Threshold set to %d", get_tracking_threshold());
       debugPrintlnUsart(buffer);
     }
+
+    HAL_Delay(1900);
 
     /* USER CODE BEGIN 3 */
   }
@@ -185,11 +200,12 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 180;
+  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLN = 360;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 6;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
   RCC_OscInitStruct.PLL.PLLR = 6;
+
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
