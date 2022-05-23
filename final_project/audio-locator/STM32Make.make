@@ -36,6 +36,7 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
+Core/Src/al_console.c \
 Core/Src/al_display.c \
 Core/Src/al_led.c \
 Core/Src/console.c \
