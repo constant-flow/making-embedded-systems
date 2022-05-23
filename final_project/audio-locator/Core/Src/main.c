@@ -45,7 +45,6 @@
 #include "al_display.h"
 #include "al_led.h"
 #include "al_stm_init.h"
-#include "al_console.h"
 
 int global_init = 1;
 int global_uninit;
@@ -83,13 +82,11 @@ int main(void)
   init_state();
   al_led_init();
   al_display_init();
-  al_console_init();
 
   while (1)
   {
     al_led_green_toggle();
     al_display_update();
-    al_console_print();
 
     ConsoleProcess();
     MX_USB_HOST_Process();

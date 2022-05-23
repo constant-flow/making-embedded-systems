@@ -7,8 +7,19 @@
 
 #include <stm32f4xx_hal.h>
 #include <stm32f469xx.h>
+#include <stdbool.h>
 
 extern UART_HandleTypeDef huart3;
+
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define MAX_BUFFER_LEN 10
+
+uint8_t receivedChar = 0;
+uint8_t receivedIndex = 0;
+uint8_t receivedString[MAX_BUFFER_LEN];
+const uint8_t *recvStr = receivedString;
+
+bool dataAvailable = false;
 
 void debugPrintln(UART_HandleTypeDef *huart, char _out[])
 {
@@ -19,31 +30,53 @@ void debugPrintln(UART_HandleTypeDef *huart, char _out[])
 
 eConsoleError ConsoleIoInit(void)
 {
-    // Enable the USART RX Interrupt
-    // NVIC_EnableIRQ(USART3_IRQn);
+    NVIC_EnableIRQ(USART3_IRQn);
+    HAL_UART_Receive_IT(&huart3, &receivedChar, 1);
     return CONSOLE_SUCCESS;
 }
 
 eConsoleError ConsoleIoReceive(uint8_t *buffer, const uint32_t bufferLength, uint32_t *readLength)
 {
-    // uint32_t i = 0;
-    // char ch;
+    if (dataAvailable)
+    {
+        uint8_t lengthOfBuffer = MIN(bufferLength, receivedIndex);
+        memcpy(buffer, receivedString, lengthOfBuffer);
+        *readLength = lengthOfBuffer;
 
-    // ch = getch_noblock();
-    // while ((EOF != ch) && (i < bufferLength))
-    // {
-    //     buffer[i] = (uint8_t)ch;
-    //     i++;
-    //     ch = getch_noblock();
-    // }
-    // *readLength = i;
+        // Send to console
+        HAL_UART_Transmit(&huart3, recvStr, receivedIndex, 1000);
 
-    *readLength = 0;
+        // Reset string capturing vars
+        receivedIndex = 0;
+        dataAvailable = false;
+        receivedChar = '\0';
+        for (int i = 0; i < MAX_BUFFER_LEN; i++)
+            receivedString[i] = '-';
+    }
+    else
+    {
+        *readLength = 0;
+    }
     return CONSOLE_SUCCESS;
 }
 
 eConsoleError ConsoleIoSendString(const char *buffer)
 {
-    // HAL_UART_Transmit(&huart3, &receivedChar, 1, 1000);
+    HAL_UART_Transmit(&huart3, (uint8_t *)buffer, strlen(buffer), 1000);
     return CONSOLE_SUCCESS;
+}
+
+void USART3_IRQHandler()
+{
+    dataAvailable = true;
+    HAL_UART_IRQHandler(&huart3);
+
+    receivedString[receivedIndex] = receivedChar;
+    receivedIndex++;
+
+    if (receivedChar == '\n')
+        dataAvailable = true;
+    if (receivedIndex >= MAX_BUFFER_LEN - 1)
+        dataAvailable = true;
+    HAL_UART_Receive_IT(&huart3, &receivedChar, 1);
 }
