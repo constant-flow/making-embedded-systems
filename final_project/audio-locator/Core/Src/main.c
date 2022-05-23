@@ -49,6 +49,14 @@
 int global_init = 1;
 int global_uninit;
 
+// ============================================================================
+// Tests/Section macros to enable for debugging and other applications
+// ----------------------------------------------------------------------------
+//
+// #define AL_TEST_VAR_LOCATIONS
+// ============================================================================
+
+#ifdef AL_TEST_VAR_LOCATIONS
 void mem_test()
 {
   static int static_var_in_function = 2;
@@ -65,6 +73,7 @@ void mem_test()
   volatile int adr_stack_1 = adr_local_var_1;
   volatile int adr_stack_2 = adr_local_var_2;
 }
+#endif
 
 /**
  * @brief  The application entry point.
@@ -75,7 +84,9 @@ int main(void)
 {
   al_board_init();
 
+#ifdef AL_TEST_VAR_LOCATIONS
   mem_test();
+#endif
 
   /* Init custom components */
   ConsoleInit();

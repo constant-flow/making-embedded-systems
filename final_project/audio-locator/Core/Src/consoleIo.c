@@ -43,9 +43,6 @@ eConsoleError ConsoleIoReceive(uint8_t *buffer, const uint32_t bufferLength, uin
         memcpy(buffer, receivedString, lengthOfBuffer);
         *readLength = lengthOfBuffer;
 
-        // Send to console
-        HAL_UART_Transmit(&huart3, recvStr, receivedIndex, 1000);
-
         // Reset string capturing vars
         receivedIndex = 0;
         dataAvailable = false;

@@ -27,10 +27,8 @@ static eCommandResult_T ConsoleCommandMode(const char buffer[]);
 
 static const sConsoleCommandTable_T mConsoleCommandTable[] =
 	{
-		{";", &ConsoleCommandComment, HELP("Comment! You do need a space after the semicolon. ")},
 		{"help", &ConsoleCommandHelp, HELP("Lists the commands available")},
 		{"ver", &ConsoleCommandVer, HELP("Get the version string")},
-		// {"int", &ConsoleCommandParamExampleInt16, HELP("How to get a signed int16 from params list: int -321")},
 		{"threshold", &ConsoleCommandSetDetectorThreshold, HELP("Set detector sensitivity form 0-255")},
 		{"mode", &ConsoleCommandMode, HELP("Switch between 2D/3D Mode: `2` for 2D, `3` for 3D")},
 
@@ -53,8 +51,12 @@ static eCommandResult_T ConsoleCommandHelp(const char buffer[])
 	IGNORE_UNUSED_VARIABLE(buffer);
 
 	tableLength = sizeof(mConsoleCommandTable) / sizeof(mConsoleCommandTable[0]);
+	ConsoleIoSendString(STR_ENDLINE);
+	ConsoleIoSendString("╭──────────────────────────────\r\n");
 	for (i = 0u; i < tableLength - 1u; i++)
 	{
+		ConsoleIoSendString("│ ");
+
 		ConsoleIoSendString(mConsoleCommandTable[i].name);
 #if CONSOLE_COMMAND_MAX_HELP_LENGTH > 0
 		ConsoleIoSendString(" : ");
@@ -62,6 +64,7 @@ static eCommandResult_T ConsoleCommandHelp(const char buffer[])
 #endif // CONSOLE_COMMAND_MAX_HELP_LENGTH > 0
 		ConsoleIoSendString(STR_ENDLINE);
 	}
+	ConsoleIoSendString("╰──────────────────────────────\r\n");
 	return result;
 }
 
