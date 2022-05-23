@@ -91,7 +91,7 @@ static eCommandResult_T ConsoleCommandSetDetectorThreshold(const char buffer[])
 	result = ConsoleReceiveParamInt16(buffer, 1, &threshold);
 	if (COMMAND_SUCCESS == result)
 	{
-		if (set_tracking_threshold(threshold))
+		if (state_set_tracking_threshold(threshold))
 		{
 			ConsoleIoSendString("Changed detector threshold");
 		}
@@ -115,12 +115,12 @@ static eCommandResult_T ConsoleCommandMode(const char buffer[])
 		if (mode == 2)
 		{
 			ConsoleIoSendString("Set to 2D Mode");
-			set_tracking_mode(2);
+			state_set_tracking_mode(2);
 		}
 		else if (mode == 3)
 		{
 			ConsoleIoSendString("Set to 3D Mode");
-			set_tracking_mode(3);
+			state_set_tracking_mode(3);
 		}
 		else
 		{

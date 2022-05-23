@@ -90,7 +90,7 @@ int main(void)
 
   /* Init custom components */
   ConsoleInit();
-  init_state();
+  state_init();
   al_led_init();
   al_display_init();
 
@@ -102,19 +102,19 @@ int main(void)
     ConsoleProcess();
     MX_USB_HOST_Process();
 
-    if (changed_tracking_mode())
+    if (state_changed_tracking_mode())
     {
-      processed_tracking_mode_change();
+      state_processed_tracking_mode_change();
       char buffer[32];
-      sprintf(buffer, "Changed to %dD mode", get_tracking_mode());
+      sprintf(buffer, "Changed to %dD mode", state_get_tracking_mode());
       debugPrintlnUsart(buffer);
     }
 
-    if (changed_tracking_threshold())
+    if (state_changed_tracking_threshold())
     {
-      processed_tracking_threshold_change();
+      state_processed_tracking_threshold_change();
       char buffer[32];
-      sprintf(buffer, "Threshold set to %d", get_tracking_threshold());
+      sprintf(buffer, "Threshold set to %d", state_get_tracking_threshold());
       debugPrintlnUsart(buffer);
     }
 

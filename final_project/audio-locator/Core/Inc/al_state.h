@@ -4,18 +4,18 @@
 #include "stdint.h"
 
 // set all states to default
-void init_state();
+void state_init();
 
 // Tracking
-void set_tracking_mode(int16_t newMode);
-uint16_t get_tracking_mode();
-void processed_tracking_mode_change();
-int changed_tracking_mode();
+void state_set_tracking_mode(int16_t newMode);
+uint16_t state_get_tracking_mode();
+void state_processed_tracking_mode_change();
+int state_changed_tracking_mode();
 
 // Sound detection
-int set_tracking_threshold(int16_t newLevel);
-int changed_tracking_threshold();
-int16_t get_tracking_threshold();
-void processed_tracking_threshold_change();
+int state_set_tracking_threshold(int16_t newLevel);
+int state_changed_tracking_threshold();
+int16_t state_get_tracking_threshold();
+void state_processed_tracking_threshold_change();
 
 #endif // HEADER_AL_STATE
