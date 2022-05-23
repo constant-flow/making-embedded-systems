@@ -73,3 +73,15 @@ int16_t state_get_tracking_threshold()
 {
     return state.detector_level;
 }
+
+void state_tracking_mode_toggle()
+{
+    if (state_get_tracking_mode() == 2)
+    {
+        state_set_tracking_mode(3);
+    }
+    else
+    {
+        state_set_tracking_mode(2);
+    }
+}

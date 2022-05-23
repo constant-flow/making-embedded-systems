@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include "stm32469i_discovery.h"
 
 /* Custom non-generated functions --------------------------------------------*/
 #include "console.h"
@@ -45,6 +46,7 @@
 #include "al_display.h"
 #include "al_led.h"
 #include "al_stm_init.h"
+#include "al_button.h"
 
 int global_init = 1;
 int global_uninit;
@@ -80,6 +82,11 @@ void mem_test()
  * @retval int
  */
 
+void led_toooogle()
+{
+  state_tracking_mode_toggle();
+}
+
 int main(void)
 {
   al_board_init();
@@ -93,6 +100,7 @@ int main(void)
   state_init();
   al_led_init();
   al_display_init();
+  button_init(led_toooogle);
 
   while (1)
   {
@@ -108,6 +116,13 @@ int main(void)
       char buffer[32];
       sprintf(buffer, "Changed to %dD mode", state_get_tracking_mode());
       debugPrintlnUsart(buffer);
+
+      // Show state via LED // TODO make led code independent via al_led.h
+      al_led_all_off();
+      if (state_get_tracking_mode() == 2)
+        BSP_LED_On(LED2);
+      if (state_get_tracking_mode() == 3)
+        BSP_LED_On(LED3);
     }
 
     if (state_changed_tracking_threshold())

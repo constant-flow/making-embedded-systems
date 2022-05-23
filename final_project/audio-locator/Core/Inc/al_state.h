@@ -17,5 +17,6 @@ int state_set_tracking_threshold(int16_t newLevel);
 int state_changed_tracking_threshold();
 int16_t state_get_tracking_threshold();
 void state_processed_tracking_threshold_change();
+void state_tracking_mode_toggle();
 
 #endif // HEADER_AL_STATE
