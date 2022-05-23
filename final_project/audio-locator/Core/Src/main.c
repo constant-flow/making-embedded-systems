@@ -65,9 +65,6 @@ void mem_test()
   volatile int adr_heap_2 = malloc(1);
   volatile int adr_stack_1 = adr_local_var_1;
   volatile int adr_stack_2 = adr_local_var_2;
-
-  volatile int stop = 2;
-  volatile int stop2 = __bss_end__();
 }
 
 /**
@@ -86,6 +83,7 @@ int main(void)
   init_state();
   al_led_init();
   al_display_init();
+  al_console_init();
 
   while (1)
   {
@@ -112,6 +110,6 @@ int main(void)
       debugPrintlnUsart(buffer);
     }
 
-    HAL_Delay(1900);
+    HAL_Delay(10);
   }
 }
