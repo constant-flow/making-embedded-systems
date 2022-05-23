@@ -36,9 +36,9 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-Core/Src/al_console.c \
 Core/Src/al_display.c \
 Core/Src/al_led.c \
+Core/Src/al_state.c \
 Core/Src/console.c \
 Core/Src/consoleCommands.c \
 Core/Src/consoleIo.c \
@@ -53,7 +53,6 @@ Core/Src/main.c \
 Core/Src/quadspi.c \
 Core/Src/sai.c \
 Core/Src/sdio.c \
-Core/Src/state.c \
 Core/Src/stm32f4xx_hal_msp.c \
 Core/Src/stm32f4xx_hal_timebase_tim.c \
 Core/Src/stm32f4xx_it.c \

@@ -11,7 +11,7 @@
 #include "console.h"
 #include "consoleIo.h"
 #include "version.h"
-#include "state.h"
+#include "al_state.h"
 
 #define IGNORE_UNUSED_VARIABLE(x) \
 	if (&x == &x)                 \

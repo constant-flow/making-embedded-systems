@@ -5,6 +5,9 @@
         "state.h": "c",
         "stm32469i_discovery_lcd.h": "c",
         "stm32469i_discovery.h": "c",
-        "al_led.h": "c"
-    }
+        "al_led.h": "c",
+        "al_console.h": "c",
+        "stm32f469xx.h": "c"
+    },
+    "cortex-debug.variableUseNaturalFormat": true
 }

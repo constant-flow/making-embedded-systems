@@ -41,7 +41,7 @@
 
 /* Custom non-generated functions --------------------------------------------*/
 #include "console.h"
-#include "state.h"
+#include "al_state.h"
 #include "al_display.h"
 #include "al_led.h"
 #include "al_stm_init.h"

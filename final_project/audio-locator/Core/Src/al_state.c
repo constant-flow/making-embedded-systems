@@ -1,4 +1,4 @@
-#include "state.h"
+#include "al_state.h"
 
 struct audio_locator_state
 {

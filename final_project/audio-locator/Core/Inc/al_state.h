@@ -1,5 +1,5 @@
-#if !defined(HEADER_STATE)
-#define HEADER_STATE
+#if !defined(HEADER_AL_STATE)
+#define HEADER_AL_STATE
 
 #include "stdint.h"
 
@@ -18,4 +18,4 @@ int changed_tracking_threshold();
 int16_t get_tracking_threshold();
 void processed_tracking_threshold_change();
 
-#endif // HEADER_STATE
+#endif // HEADER_AL_STATE
