@@ -15,7 +15,7 @@
  ******************************************************************************
  */
 
-/// BSP Documentation: https://documentation.help/STM32F469I-Discovery-BSP-Drivers
+/// BSP Documentation: https://documentation.help/STM32F469I-Discovery-BSP-Drivers/
 
 #include "main.h"
 #include "crc.h"
@@ -47,6 +47,7 @@
 #include "al_led.h"
 #include "al_stm_init.h"
 #include "al_button.h"
+#include "al_direction.h"
 
 int global_init = 1;
 int global_uninit;
@@ -101,9 +102,12 @@ int main(void)
   al_led_init();
   al_display_init();
   button_init(led_toooogle);
+  direction_reset();
+  display_set_tracking(direction_get());
 
   while (1)
   {
+    direction_update();
     al_led_green_toggle();
     al_display_update();
 

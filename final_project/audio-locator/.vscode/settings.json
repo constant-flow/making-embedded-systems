@@ -7,7 +7,9 @@
         "stm32469i_discovery.h": "c",
         "al_led.h": "c",
         "al_console.h": "c",
-        "stm32f469xx.h": "c"
+        "stm32f469xx.h": "c",
+        "al_direction.h": "c",
+        "al_display.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }
