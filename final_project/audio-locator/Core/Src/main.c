@@ -48,6 +48,7 @@
 #include "al_stm_init.h"
 #include "al_button.h"
 #include "al_direction.h"
+#include "al_mics.h"
 
 int global_init = 1;
 int global_uninit;
@@ -104,6 +105,7 @@ int main(void)
   button_init(led_toooogle);
   direction_reset();
   display_set_tracking(direction_get());
+  mics_init();
 
   while (1)
   {

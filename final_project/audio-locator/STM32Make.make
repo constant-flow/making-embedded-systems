@@ -40,6 +40,7 @@ Core/Src/al_button.c \
 Core/Src/al_direction.c \
 Core/Src/al_display.c \
 Core/Src/al_led.c \
+Core/Src/al_mics.c \
 Core/Src/al_state.c \
 Core/Src/console.c \
 Core/Src/consoleCommands.c \
@@ -63,6 +64,7 @@ Core/Src/tim.c \
 Core/Src/usart.c \
 Drivers/BSP/Components/otm8009a/otm8009a.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery.c \
+Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_audio.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_lcd.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_sdram.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
@@ -80,6 +82,8 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_hcd.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_ltdc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_ltdc_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c \
@@ -218,6 +222,7 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
+-DHAL_I2S_MODULE_ENABLED \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
 -DUSE_STM32469I_DISCO_REVB
@@ -225,6 +230,7 @@ C_DEFS =  \
 
 # CXX defines
 CXX_DEFS =  \
+-DHAL_I2S_MODULE_ENABLED \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
 -DUSE_STM32469I_DISCO_REVB
@@ -241,6 +247,7 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
 -IDrivers/CMSIS/Include \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
+-IDrivers/STM32F4xx_HAL_Driver/Inc  \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
 -IFATFS/App \
 -IFATFS/Target \
