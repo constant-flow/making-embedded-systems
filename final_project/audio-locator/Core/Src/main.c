@@ -116,6 +116,8 @@ int main(void)
     ConsoleProcess();
     MX_USB_HOST_Process();
 
+    mics_update();
+
     if (state_changed_tracking_mode())
     {
       state_processed_tracking_mode_change();
