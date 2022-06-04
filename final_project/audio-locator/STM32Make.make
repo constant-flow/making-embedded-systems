@@ -46,11 +46,13 @@ Core/Src/console.c \
 Core/Src/consoleCommands.c \
 Core/Src/consoleIo.c \
 Core/Src/crc.c \
+Core/Src/dma.c \
 Core/Src/dma2d.c \
 Core/Src/dsihost.c \
 Core/Src/fmc.c \
 Core/Src/gpio.c \
 Core/Src/i2c.c \
+Core/Src/i2s.c \
 Core/Src/ltdc.c \
 Core/Src/main.c \
 Core/Src/quadspi.c \
@@ -222,7 +224,8 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DHAL_I2S_MODULE_ENABLED \
+-DMIC_DATA_GPIO_Port=0  \
+-DMIC_DATA_Pin=0 \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
 -DUSE_STM32469I_DISCO_REVB
@@ -230,7 +233,8 @@ C_DEFS =  \
 
 # CXX defines
 CXX_DEFS =  \
--DHAL_I2S_MODULE_ENABLED \
+-DMIC_DATA_GPIO_Port=0  \
+-DMIC_DATA_Pin=0 \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
 -DUSE_STM32469I_DISCO_REVB

@@ -1,6 +1,8 @@
 #include "al_mics.h"
 #include "al_logging.h"
 
+// helpful ressource https://www.youtube.com/watch?v=zlGSxZGwj-E
+
 const uint32_t AL_MIC_FREQUENCY = 48000;
 const uint32_t AL_MIC_BITRATE = 16;
 const uint32_t AL_MIC_CHANNELS = 3;
@@ -9,31 +11,40 @@ const uint32_t AL_MIC_CHANNELS = 3;
 uint16_t pdm_buffer[PDM_BUF_SIZE];
 uint16_t pcm_buffer[PDM_BUF_SIZE];
 
+extern I2S_HandleTypeDef hi2s3;
+
+static int dataReady = 0;
+
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
+{
+    dataReady = 1;
+}
+
+#define buf_size 128
+uint16_t buf[buf_size];
+
 void mics_init()
 {
-    uint8_t ret = AUDIO_OK;
-    ret = BSP_AUDIO_IN_Init(AL_MIC_FREQUENCY, AL_MIC_BITRATE, AL_MIC_CHANNELS);
-    if (ret != AUDIO_OK)
+    if (HAL_OK != HAL_I2S_Init(&hi2s3))
     {
-        logging_log("Mics: ❌ BSP_AUDIO_IN_Init failed");
+        while (1)
+        {
+        };
+    }
+
+    if (HAL_OK != HAL_I2S_Receive_DMA(&hi2s3, buf, buf_size))
+    {
+        while (1)
+        {
+        };
     }
     logging_log("✅ Mics: success");
 }
 
 void mics_update()
 {
-    logging_log("Mics: Record start");
-    if (AUDIO_OK != BSP_AUDIO_IN_Record(pdm_buffer, PDM_BUF_SIZE))
+    if (dataReady)
     {
-        logging_log("Mics: ❌ Record failed");
-        HAL_Delay(1000);
+        logging_log("Mics: ✅ rec");
     }
-    logging_log("Mics: ✅ rec");
-
-    // if (AUDIO_OK != BSP_AUDIO_IN_PDMToPCM(pdm_buffer, pcm_buffer))
-    // {
-    //     logging_log("Mics: ❌ PCM Conversion failed");
-    //     HAL_Delay(1000);
-    // }
-    // logging_log("Mics: ✅ conv");
 }

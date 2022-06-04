@@ -10,7 +10,8 @@
         "stm32f469xx.h": "c",
         "al_direction.h": "c",
         "al_display.h": "c",
-        "al_logging.h": "c"
+        "al_logging.h": "c",
+        "i2s.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }

@@ -89,8 +89,6 @@ void Error_Handler(void);
 #define QSPI_BK1_NCS_GPIO_Port GPIOB
 #define SDNCAS_Pin GPIO_PIN_15
 #define SDNCAS_GPIO_Port GPIOG
-#define MIC_DATA_Pin GPIO_PIN_6
-#define MIC_DATA_GPIO_Port GPIOD
 #define D2_Pin GPIO_PIN_0
 #define D2_GPIO_Port GPIOD
 #define uSD_D3_Pin GPIO_PIN_11

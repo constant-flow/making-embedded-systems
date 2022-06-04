@@ -38,12 +38,11 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.HSEState = RCC_HSE_ON;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLM = 8;
-    RCC_OscInitStruct.PLL.PLLN = 360;
+    RCC_OscInitStruct.PLL.PLLM = 8;   // TODO, was gen as 4, why for display?
+    RCC_OscInitStruct.PLL.PLLN = 360; // TODO, was gen as 180, why for display?
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-    RCC_OscInitStruct.PLL.PLLQ = 7;
+    RCC_OscInitStruct.PLL.PLLQ = 6;
     RCC_OscInitStruct.PLL.PLLR = 6;
-
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
     {
         Error_Handler();
@@ -70,6 +69,31 @@ void SystemClock_Config(void)
     }
 }
 
+/**
+ * @brief Peripherals Common Clock Configuration
+ * @retval None
+ */
+void PeriphCommonClock_Config(void)
+{
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+    /** Initializes the peripherals clock
+     */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S | RCC_PERIPHCLK_SDIO | RCC_PERIPHCLK_CLK48 | RCC_PERIPHCLK_LTDC;
+    PeriphClkInitStruct.PLLI2S.PLLI2SN = 192;
+    PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
+    PeriphClkInitStruct.PLLSAI.PLLSAIN = 144;
+    PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
+    PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV6;
+    PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_4;
+    PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLSAIP;
+    PeriphClkInitStruct.SdioClockSelection = RCC_SDIOCLKSOURCE_CLK48;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
 /* Initialize all configured peripherals */
 void al_init_peripherals()
 {
@@ -88,34 +112,11 @@ void al_init_peripherals()
     MX_USART3_UART_Init();
     MX_USART6_UART_Init();
     MX_FATFS_Init();
+    MX_I2S2_Init();
+    MX_I2S3_Init();
     MX_LIBJPEG_Init();
     MX_PDM2PCM_Init();
     MX_USB_HOST_Init();
-}
-
-/**
- * @brief Peripherals Common Clock Configuration
- * @retval None
- */
-void PeriphCommonClock_Config(void)
-{
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-
-    /** Initializes the peripherals clock
-     */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SAI_PLLSAI | RCC_PERIPHCLK_SDIO | RCC_PERIPHCLK_CLK48 | RCC_PERIPHCLK_LTDC;
-    PeriphClkInitStruct.PLLSAI.PLLSAIN = 144;
-    PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
-    PeriphClkInitStruct.PLLSAI.PLLSAIQ = 2;
-    PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV6;
-    PeriphClkInitStruct.PLLSAIDivQ = 1;
-    PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_4;
-    PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48CLKSOURCE_PLLSAIP;
-    PeriphClkInitStruct.SdioClockSelection = RCC_SDIOCLKSOURCE_CLK48;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-    {
-        Error_Handler();
-    }
 }
 
 /* USER CODE BEGIN 4 */

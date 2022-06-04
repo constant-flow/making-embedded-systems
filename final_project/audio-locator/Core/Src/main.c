@@ -19,10 +19,12 @@
 
 #include "main.h"
 #include "crc.h"
+#include "dma.h"
 #include "dma2d.h"
 #include "dsihost.h"
 #include "fatfs.h"
 #include "i2c.h"
+#include "i2s.h"
 #include "libjpeg.h"
 #include "ltdc.h"
 #include "pdm2pcm.h"
