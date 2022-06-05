@@ -106,12 +106,13 @@ void al_init_peripherals()
     MX_I2C2_Init();
     MX_LTDC_Init();
     MX_QUADSPI_Init();
-    MX_SAI1_Init();
+    // MX_SAI1_Init();
     MX_SDIO_SD_Init();
     MX_TIM1_Init();
     MX_USART3_UART_Init();
     MX_USART6_UART_Init();
     MX_FATFS_Init();
+    MX_DMA_Init();
     MX_I2S2_Init();
     MX_I2S3_Init();
     MX_LIBJPEG_Init();

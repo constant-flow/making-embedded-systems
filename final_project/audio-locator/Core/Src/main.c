@@ -143,6 +143,6 @@ int main(void)
       debugPrintlnUsart(buffer);
     }
 
-    HAL_Delay(10);
+    // HAL_Delay(10);
   }
 }
