@@ -26,6 +26,8 @@ static int screen_width = 0;
 static int screen_height = 0;
 static int spacing = 20;
 
+static mics_pcm_frame *pcm_frame;
+
 // private functions
 void display_draw_title();
 
@@ -84,9 +86,62 @@ void al_display_update()
     BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
     BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
     // HAL_DSI_Refresh(&hdsi);
+
+    al_draw_audio();
+}
+
+volatile a = 0;
+int cnt = 0;
+void al_draw_audio(void)
+{
+    uint16_t x = 10;
+    uint16_t y = title_height;
+
+    uint16_t audio_area_w = 400;
+    uint16_t audio_area_h = 100;
+
+    if (cnt++ % 2)
+        BSP_LCD_SetTextColor(0xff202020);
+    else
+        BSP_LCD_SetTextColor(0xff000000);
+    BSP_LCD_FillRect(x, y, audio_area_w, audio_area_h * 2);
+
+    uint16_t gap = audio_area_w / pcm_frame->count;
+
+    y = title_height + audio_area_h;
+    BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
+
+    for (int i = 0; i < pcm_frame->count; i++)
+    {
+        if (pcm_frame->pdm_samples[i] != 0)
+        {
+            a = pcm_frame->pdm_samples[i]; // checks if PDM is anything but 0, so far not :(
+        }
+    }
+
+    for (int i = 0; i < pcm_frame->count; i++)
+    {
+        uint16_t y_end = y + (uint16_t)((pcm_frame->pdm_samples[i] / (float)UINT16_MAX) * audio_area_h); // raw PDM data
+        // uint16_t y_end = y + (uint16_t)((pcm_frame->samples[i] / (float)UINT16_MAX) * audio_area_h); // PCM data
+        if (y_end < 0)
+            y_end = 0;
+
+        if (y_end > 480)
+            y_end = 480;
+
+        BSP_LCD_DrawLine(x, y, x, y_end);
+        BSP_LCD_DrawLine(x + 1, y, x + 1, y_end);
+        BSP_LCD_DrawLine(x - 1, y, x - 1, y_end);
+        x += gap;
+    }
 }
 
 void display_set_tracking(const tracking_dir *dir)
 {
     last_tracking = dir;
+}
+
+void display_set_audio(mics_pcm_frame *new_pcm_frame)
+{
+    pcm_frame = new_pcm_frame;
 }

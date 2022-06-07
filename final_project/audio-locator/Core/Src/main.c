@@ -55,6 +55,8 @@
 int global_init = 1;
 int global_uninit;
 
+mics_pcm_frame *pcm_frame = NULL;
+
 // ============================================================================
 // Tests/Section macros to enable for debugging and other applications
 // ----------------------------------------------------------------------------
@@ -110,15 +112,18 @@ int main(void)
   mics_init();
 
   while (1)
+
   {
+    mics_update();
+    pcm_frame = mic_get_sample();
+    display_set_audio(pcm_frame);
+
     direction_update();
     al_led_green_toggle();
     al_display_update();
 
     ConsoleProcess();
     MX_USB_HOST_Process();
-
-    mics_update();
 
     if (state_changed_tracking_mode())
     {
