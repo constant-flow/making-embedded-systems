@@ -211,7 +211,8 @@ C_DEFS =  \
 -DSTM32F469xx \
 -DUSE_STM32469I_DISCO_REVB \
 -DMIC_DATA_Pin=0 \
--DMIC_DATA_GPIO_Port=0 
+-DMIC_DATA_GPIO_Port=0 \
+-DARM_MATH_CM4
 
 # TODO: MIC_DATA_Pin, MIC_DATA_GPIO_Port for BSP not to complain
 
@@ -237,6 +238,7 @@ C_INCLUDES =  \
 -IMiddlewares/ST/STM32_USB_Host_Library/Class/CDC/Inc \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
 -IDrivers/CMSIS/Include \
+-IDrivers/CMSIS/DSP/Include \
 -IDrivers/BSP/STM32469I-Discovery \
 -IUtilities/Fonts \
 -IDrivers/BSP/Components/otm8009a \
@@ -265,9 +267,11 @@ LDSCRIPT = STM32F469NIHx_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys  \
--l:libPDMFilter_CM4_GCC_wc32.a
+-l:libPDMFilter_CM4_GCC_wc32.a \
+-l:libarm_cortexM4lf_math.a
 LIBDIR =  \
--LMiddlewares/ST/STM32_Audio/Addons/PDM/Lib
+-LMiddlewares/ST/STM32_Audio/Addons/PDM/Lib \
+-LDrivers/CMSIS/Lib/GCC
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections --specs=rdimon.specs
 
 # default action: build all

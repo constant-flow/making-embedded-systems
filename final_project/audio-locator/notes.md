@@ -3,6 +3,9 @@
 
 dsi_host check if works as genereated in audio-loc-proj, as the bsp inits the screen
 
+# setup dsp
+https://community.st.com/s/article/configuring-dsp-libraries-on-stm32cubeide
+
 # check 
 
 **Clocks different than generated**
@@ -10,3 +13,4 @@ dsi_host check if works as genereated in audio-loc-proj, as the bsp inits the sc
 RCC_OscInitStruct.PLL.PLLM = 8;
 RCC_OscInitStruct.PLL.PLLN = 360;
 ```
+

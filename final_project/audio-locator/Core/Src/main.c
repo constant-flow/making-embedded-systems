@@ -37,6 +37,8 @@
 #include "gpio.h"
 #include "fmc.h"
 
+#include "arm_math.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -93,6 +95,24 @@ void led_toooogle()
   state_tracking_mode_toggle();
 }
 
+void test_dsp()
+{
+  /* USER CODE BEGIN PV */
+  float32_t FFT_Input_Q15_f[50];
+  float32_t aFFT_Input_Q15[50];
+/* USER CODE END PV */
+
+/* USER CODE BEGIN PD */
+#define FFT_Length 1024
+  /* USER CODE END PD */
+
+  /* USER CODE BEGIN 1 */
+  arm_float_to_q15((float32_t *)&FFT_Input_Q15_f[0], (q15_t *)&aFFT_Input_Q15[0], FFT_Length * 2);
+  /* USER CODE END 1 */
+
+  arm_correlate_fast_q15()
+}
+
 int main(void)
 {
   al_board_init();
@@ -114,6 +134,8 @@ int main(void)
   while (1)
 
   {
+    test_dsp();
+
     mics_update();
     pcm_frame = mic_get_sample();
     display_set_audio(pcm_frame);

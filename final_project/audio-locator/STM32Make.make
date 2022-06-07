@@ -224,7 +224,8 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DMIC_DATA_GPIO_Port=0  \
+-DARM_MATH_CM4 \
+-DMIC_DATA_GPIO_Port=0 \
 -DMIC_DATA_Pin=0 \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
@@ -233,7 +234,8 @@ C_DEFS =  \
 
 # CXX defines
 CXX_DEFS =  \
--DMIC_DATA_GPIO_Port=0  \
+-DARM_MATH_CM4 \
+-DMIC_DATA_GPIO_Port=0 \
 -DMIC_DATA_Pin=0 \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
@@ -248,6 +250,7 @@ C_INCLUDES =  \
 -ICore/Inc \
 -IDrivers/BSP/Components/otm8009a \
 -IDrivers/BSP/STM32469I-Discovery \
+-IDrivers/CMSIS/DSP/Include \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
 -IDrivers/CMSIS/Include \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
@@ -296,8 +299,9 @@ CXXFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 LDSCRIPT = STM32F469NIHx_FLASH.ld
 
 # libraries
-LIBS = -l:libPDMFilter_CM4_GCC_wc32.a 
+LIBS = -l:libPDMFilter_CM4_GCC_wc32.a -l:libarm_cortexM4lf_math.a 
 LIBDIR = \
+-LDrivers/CMSIS/Lib/GCC \
 -LMiddlewares/ST/STM32_Audio/Addons/PDM/Lib
 
 
