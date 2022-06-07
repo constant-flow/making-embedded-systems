@@ -109,8 +109,6 @@ void test_dsp()
   /* USER CODE BEGIN 1 */
   arm_float_to_q15((float32_t *)&FFT_Input_Q15_f[0], (q15_t *)&aFFT_Input_Q15[0], FFT_Length * 2);
   /* USER CODE END 1 */
-
-  arm_correlate_fast_q15()
 }
 
 int main(void)
