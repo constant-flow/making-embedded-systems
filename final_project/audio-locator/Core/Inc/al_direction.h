@@ -1,6 +1,8 @@
 #if !defined(HEADER_AL_DIRECTION)
 #define HEADER_AL_DIRECTION
 
+#include "al_mics.h"
+
 // available tracking modes
 // 2D: track in plane
 // 3D: track in space
@@ -35,5 +37,7 @@ tracking_dir *direction_get();
 
 // calculate (possibly) new direction
 void direction_update();
+
+void direction_input(mics_pcm_frame *input, uint8_t channel_id);
 
 #endif // HEADER_AL_DIRECTION

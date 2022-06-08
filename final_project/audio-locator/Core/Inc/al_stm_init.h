@@ -118,6 +118,7 @@ void al_init_peripherals()
     MX_LIBJPEG_Init();
     MX_PDM2PCM_Init();
     MX_USB_HOST_Init();
+    MX_TIM4_Init();
 }
 
 /* USER CODE BEGIN 4 */

@@ -7,7 +7,7 @@ const uint32_t AL_MIC_FREQUENCY = 48000;
 const uint32_t AL_MIC_BITRATE = 16;
 const uint32_t AL_MIC_CHANNELS = 3;
 
-#define PDM_SAMPLES 64
+#define PDM_SAMPLES 32
 
 #define PDM_BUF_SIZE PDM_SAMPLES * 2
 #define PDM_BUF_SIZE_HALF PDM_BUF_SIZE / 2
@@ -53,8 +53,9 @@ void process_data()
     frame_current.pdm_samples = pdm_buffer;
 }
 
-void mics_init()
+void mics_init(TIM_HandleTypeDef *htim_i2s3)
 {
+    HAL_TIM_PWM_Start(htim_i2s3, TIM_CHANNEL_2);
     frame_current.count = PDM_SAMPLES;
     frame_current.samples = pcm_buffer_head;
 

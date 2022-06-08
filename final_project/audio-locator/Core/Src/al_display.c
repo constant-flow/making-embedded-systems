@@ -121,8 +121,8 @@ void al_draw_audio(void)
 
     for (int i = 0; i < pcm_frame->count; i++)
     {
-        uint16_t y_end = y + (uint16_t)((pcm_frame->pdm_samples[i] / (float)UINT16_MAX) * audio_area_h); // raw PDM data
-        // uint16_t y_end = y + (uint16_t)((pcm_frame->samples[i] / (float)UINT16_MAX) * audio_area_h); // PCM data
+        // uint16_t y_end = y + (uint16_t)((pcm_frame->pdm_samples[i] / (float)UINT16_MAX) * audio_area_h); // raw PDM data
+        uint16_t y_end = y + (uint16_t)((pcm_frame->samples[i] / (float)UINT16_MAX) * audio_area_h); // PCM data
         if (y_end < 0)
             y_end = 0;
 

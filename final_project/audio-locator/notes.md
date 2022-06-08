@@ -14,3 +14,8 @@ RCC_OscInitStruct.PLL.PLLM = 8;
 RCC_OscInitStruct.PLL.PLLN = 360;
 ```
 
+start the pwm
+HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
+
+
+180 / ((0 + 1) * (58 + 1)) = 3.05084746

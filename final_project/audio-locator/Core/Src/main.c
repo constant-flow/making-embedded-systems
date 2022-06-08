@@ -127,12 +127,12 @@ int main(void)
   button_init(led_toooogle);
   direction_reset();
   display_set_tracking(direction_get());
-  mics_init();
+  mics_init(&htim4);
 
   while (1)
 
   {
-    test_dsp();
+    // test_dsp();
 
     mics_update();
     pcm_frame = mic_get_sample();
@@ -168,6 +168,6 @@ int main(void)
       debugPrintlnUsart(buffer);
     }
 
-    // HAL_Delay(10);
+    // HAL_Delay(100);
   }
 }
