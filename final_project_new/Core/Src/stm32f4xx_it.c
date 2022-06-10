@@ -273,6 +273,16 @@ void DSI_IRQHandler(void)
   /* USER CODE END DSI_IRQn 1 */
 }
 
+void AUDIO_I2Sx_DMAx_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(haudio_in_i2s.hdmarx);
+}
+
+void AUDIO_SAIx_DMAx_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(haudio_out_sai.hdmatx);
+}
+
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

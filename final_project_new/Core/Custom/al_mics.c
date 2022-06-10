@@ -1,47 +1,72 @@
 #include "al_mics.h"
 #include "al_logging.h"
+#include "pdm2pcm.h"
 
 // helpful ressource https://www.youtube.com/watch?v=zlGSxZGwj-E
 
-const uint32_t AL_MIC_FREQUENCY = 48000;
-const uint32_t AL_MIC_BITRATE = 16;
-const uint32_t AL_MIC_CHANNELS = 3;
+const uint32_t AL_MIC_FREQUENCY = DEFAULT_AUDIO_IN_FREQ;
+const uint32_t AL_MIC_BITRATE = DEFAULT_AUDIO_IN_BIT_RESOLUTION;
+const uint32_t AL_MIC_CHANNELS = DEFAULT_AUDIO_IN_CHANNEL_NBR;
 
-#define PDM_SAMPLES 32
+#define PDM_BUF_SIZE INTERNAL_BUFF_SIZE
+#define PDM_BUF_SIZE_HALF PDM_BUF_SIZE/2
 
-#define PDM_BUF_SIZE PDM_SAMPLES * 2
-#define PDM_BUF_SIZE_HALF PDM_BUF_SIZE / 2
+#define PCM_BUF_SIZE PDM_BUF_SIZE/8
+#define PCM_BUF_SIZE_HALF PCM_BUF_SIZE/2
 
 uint16_t pdm_buffer[PDM_BUF_SIZE];
-uint16_t pcm_buffer[PDM_BUF_SIZE];
+uint16_t pcm_buffer[PCM_BUF_SIZE];
 
 uint16_t *pdm_buffer_head = pdm_buffer;
 uint16_t *pcm_buffer_head = pcm_buffer;
 
-extern I2S_HandleTypeDef hi2s3;
-
-static int dataReady = 0;
-uint8_t MX_PDM2PCM_Process(uint16_t *pdm_buffer_head, uint16_t *pcm_buffer_head);
-
 static mics_pcm_frame frame_current;
+
+volatile uint8_t data_ready = 0;
 
 void process_data()
 {
-    if (dataReady == 0)
+    if (0 == data_ready)
         return;
 
-    dataReady = 0;
-
-    MX_PDM2PCM_Process(pdm_buffer_head, pcm_buffer_head);
+    BSP_AUDIO_IN_PDMToPCM(pdm_buffer_head, pcm_buffer_head);
     frame_current.samples = pcm_buffer_head;
-    frame_current.pdm_samples = pdm_buffer;
+    frame_current.pdm_samples = pdm_buffer_head;
+    data_ready = 0;
 }
 
 void mics_init()
-{   
-    frame_current.count = PDM_SAMPLES;
+{
+    frame_current.count = PDM_BUF_SIZE; // TODO: should be PCM
     frame_current.samples = pcm_buffer_head;
-    logging_log("⚠️ Mics: NOT IMPLEMENTED YET");
+
+    if (AUDIO_OK != BSP_AUDIO_IN_Init(AL_MIC_FREQUENCY, AL_MIC_BITRATE, AL_MIC_CHANNELS))
+    {
+        logging_log("❌ Mics init failed");
+        Error_Handler();
+    }
+
+    if (AUDIO_OK != BSP_AUDIO_IN_Record(pdm_buffer, PDM_BUF_SIZE))
+    {
+        logging_log("❌ Mics init failed");
+        Error_Handler();
+    }
+
+    logging_log("✅ Mics: Init success");
+}
+
+void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
+{
+    data_ready = 1;
+    pdm_buffer_head = &pdm_buffer[PDM_BUF_SIZE_HALF];
+    pcm_buffer_head = &pcm_buffer[PCM_BUF_SIZE_HALF];
+}
+
+BSP_AUDIO_IN_TransferComplete_CallBack()
+{
+    data_ready = 2;
+    pdm_buffer_head = &pdm_buffer[0];
+    pcm_buffer_head = &pcm_buffer[0];
 }
 
 void mics_update()

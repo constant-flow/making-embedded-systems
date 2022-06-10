@@ -46,7 +46,6 @@ void al_loop()
     if (state_changed_tracking_mode())
     {
       state_processed_tracking_mode_change();
-      char buffer[32];
       logging_log("Changed to %dD mode", state_get_tracking_mode());      
 
       // Show state via LED // TODO make led code independent via al_led.h
@@ -60,7 +59,6 @@ void al_loop()
     if (state_changed_tracking_threshold())
     {
       state_processed_tracking_threshold_change();
-      char buffer[32];
       logging_log("Threshold set to %d", state_get_tracking_threshold());      
     }
 }

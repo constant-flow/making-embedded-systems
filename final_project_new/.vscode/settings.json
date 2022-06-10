@@ -4,6 +4,9 @@
     "editor.formatOnSave": false,
     "files.associations": {
         "al_led.h": "c",
-        "al_main.h": "c"
+        "al_main.h": "c",
+        "stm32f4xx_it.h": "c",
+        "main.h": "c",
+        "stm32469i_discovery_audio.h": "c"
     }
 }

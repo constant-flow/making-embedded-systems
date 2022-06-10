@@ -107,7 +107,6 @@ Drivers/BSP/STM32469I-Discovery/stm32469i_discovery.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_sdram.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_audio.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_lcd.c \
-Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c \
 Core/Custom/al_led.c \
 Core/Custom/al_button.c \
@@ -119,7 +118,8 @@ Core/Custom/al_mics.c \
 Core/Custom/al_state.c \
 Core/Custom/console.c \
 Core/Custom/consoleCommands.c \
-Core/Custom/consoleIo.c 
+Core/Custom/consoleIo.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s.c
 
 
 # ASM sources

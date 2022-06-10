@@ -129,8 +129,8 @@ void al_draw_audio(void)
             y_end = 480;
 
         BSP_LCD_DrawLine(x, y, x, y_end);
-        BSP_LCD_DrawLine(x + 1, y, x + 1, y_end);
-        BSP_LCD_DrawLine(x - 1, y, x - 1, y_end);
+        // BSP_LCD_DrawLine(x + 1, y, x + 1, y_end);
+        // BSP_LCD_DrawLine(x - 1, y, x - 1, y_end);
         x += gap;
     }
 }

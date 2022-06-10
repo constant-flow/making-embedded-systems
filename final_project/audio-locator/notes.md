@@ -30,3 +30,13 @@ HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
 - hit Flash STM and it should flash your connected device
 
 - trim down project like mentioned here: https://st.force.com/community/s/article/how-to-add-a-bsp-to-an-stm32cubeide-project
+
+## issues with BSP_AUDIO
+
+wasn't defined in the stm32f4xx_it.c (`AUDIO_I2Sx_DMAx_IRQHandler` alias `DMA1_Stream2_IRQHandler`)
+```c
+void AUDIO_I2Sx_DMAx_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(haudio_in_i2s.hdmarx);
+}
+```

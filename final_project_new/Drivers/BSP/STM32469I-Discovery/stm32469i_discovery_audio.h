@@ -39,6 +39,9 @@
 #include "stm32469i_discovery.h"
 #include "../../../Middlewares/ST/STM32_Audio/Addons/PDM/Inc/pdm2pcm_glo.h"
 
+extern I2S_HandleTypeDef haudio_in_i2s;
+extern SAI_HandleTypeDef haudio_out_sai;
+
 /** @addtogroup BSP
   * @{
   */

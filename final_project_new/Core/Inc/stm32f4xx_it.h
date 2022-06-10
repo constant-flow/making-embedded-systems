@@ -61,7 +61,8 @@ void LTDC_IRQHandler(void);
 void DMA2D_IRQHandler(void);
 void DSI_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+void AUDIO_I2Sx_DMAx_IRQHandler(void);
+void AUDIO_SAIx_DMAx_IRQHandler(void);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus
