@@ -1,0 +1,5 @@
+{
+    "cortex-debug.armToolchainPath": "/usr/local/bin",
+    "cortex-debug.openocdPath": "/Users/de119876/.espressif/tools/openocd-esp32/v0.11.0-esp32-20211220/openocd-esp32/bin/openocd",
+    "editor.formatOnSave": false
+}
