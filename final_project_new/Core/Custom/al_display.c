@@ -93,16 +93,16 @@ void al_display_update()
 int cnt = 0;
 void al_draw_audio(void)
 {
+    if(cnt%1000 != 0) return; //draw every 1000th time
     uint16_t x = 10;
     uint16_t y = title_height;
 
-    uint16_t audio_area_w = 400;
-    uint16_t audio_area_h = 100;
+    uint16_t audio_area_w = 200;
+    uint16_t audio_area_h = 50;
 
-    if (cnt++ % 2)
-        BSP_LCD_SetTextColor(0xff202020);
-    else
-        BSP_LCD_SetTextColor(0xff000000);
+    
+    BSP_LCD_SetTextColor(0xff202020);
+    
     BSP_LCD_FillRect(x, y, audio_area_w, audio_area_h * 2);
 
     uint16_t gap = audio_area_w / pcm_frame->count;
