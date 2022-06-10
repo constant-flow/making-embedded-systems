@@ -8,17 +8,20 @@ const uint32_t AL_MIC_FREQUENCY = DEFAULT_AUDIO_IN_FREQ;
 const uint32_t AL_MIC_BITRATE = DEFAULT_AUDIO_IN_BIT_RESOLUTION;
 const uint32_t AL_MIC_CHANNELS = DEFAULT_AUDIO_IN_CHANNEL_NBR;
 
-#define PDM_BUF_SIZE INTERNAL_BUFF_SIZE
+#define PDM_BUF_SIZE (INTERNAL_BUFF_SIZE)
 #define PDM_BUF_SIZE_HALF (PDM_BUF_SIZE / 2)
 
 #define PCM_BUF_SIZE (PDM_BUF_SIZE / 8)
 #define PCM_BUF_SIZE_HALF (PCM_BUF_SIZE / 2)
 
+#define PCM_SLOTS 2
+
 uint16_t pdm_buffer[PDM_BUF_SIZE];
-uint16_t pcm_buffer[PCM_BUF_SIZE];
+uint16_t pcm_buffer[PCM_BUF_SIZE * PCM_SLOTS];
 
 uint16_t *pdm_buffer_head = pdm_buffer;
 uint16_t *pcm_buffer_head = pcm_buffer;
+uint16_t pcm_buffer_head_index = 0;
 
 static mics_pcm_frame frame_current;
 
@@ -34,12 +37,19 @@ void process_data()
 
 #ifndef USE_GENERATED_MIC_INPUT
     BSP_AUDIO_IN_PDMToPCM(pdm_buffer_head, pcm_buffer_head);
-#endif
-    if (0 == playing)
+
+    pcm_buffer_head_index += PCM_BUF_SIZE_HALF;
+    if (pcm_buffer_head_index >= PCM_SLOTS * 2)
     {
-        playing = 1;
-        BSP_AUDIO_OUT_Play(pcm_buffer, PCM_BUF_SIZE);
+        if (0 == playing)
+        {
+            playing = 1;
+            BSP_AUDIO_OUT_Play(pcm_buffer, PCM_BUF_SIZE * PCM_SLOTS);
+        }
+        pcm_buffer_head_index = 0;
     }
+    pcm_buffer_head = &pcm_buffer[pcm_buffer_head_index];
+#endif
 
     frame_current.samples = pcm_buffer_head;
     frame_current.pdm_samples = pdm_buffer_head;
@@ -61,7 +71,7 @@ void setup_input_from_generator()
     for (int i = 0; i < PCM_BUF_SIZE; i += 2)
     {
         pcm_buffer[i + CHANNEL_L] = noise[i];
-        pcm_buffer[i + CHANNEL_R] = noise[(i+shift)%PCM_BUF_SIZE];
+        pcm_buffer[i + CHANNEL_R] = noise[(i + shift) % PCM_BUF_SIZE];
     }
 
     logging_log("⚠️ Mics: Init success from generator not mems microphones");
@@ -107,14 +117,16 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 {
     data_ready = 1;
     pdm_buffer_head = &pdm_buffer[PDM_BUF_SIZE_HALF];
-    pcm_buffer_head = &pcm_buffer[PCM_BUF_SIZE_HALF];    
+    process_data();
+    // pcm_buffer_head = &pcm_buffer[PCM_BUF_SIZE_HALF];
 }
 
 void BSP_AUDIO_IN_TransferComplete_CallBack()
 {
     data_ready = 2;
     pdm_buffer_head = &pdm_buffer[0];
-    pcm_buffer_head = &pcm_buffer[0];    
+    process_data();
+    // pcm_buffer_head = &pcm_buffer[0];
 }
 
 void mics_update()
