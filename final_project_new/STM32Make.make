@@ -64,6 +64,7 @@ Core/Src/stm32f4xx_it.c \
 Core/Src/system_stm32f4xx.c \
 Core/Src/tim.c \
 Core/Src/usart.c \
+Drivers/BSP/Components/cs43l22/cs43l22.c \
 Drivers/BSP/Components/otm8009a/otm8009a.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_audio.c \
@@ -195,6 +196,7 @@ AS_INCLUDES = \
 C_INCLUDES =  \
 -ICore/Custom \
 -ICore/Inc \
+-IDrivers/BSP/Components \
 -IDrivers/BSP/Components/otm8009a \
 -IDrivers/BSP/STM32469I-Discovery \
 -IDrivers/CMSIS/DSP/Include \

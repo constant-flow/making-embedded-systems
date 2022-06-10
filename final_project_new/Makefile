@@ -119,7 +119,8 @@ Core/Custom/al_state.c \
 Core/Custom/console.c \
 Core/Custom/consoleCommands.c \
 Core/Custom/consoleIo.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s.c
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s.c \
+Drivers/BSP/Components/cs43l22/cs43l22.c
 
 
 # ASM sources
@@ -196,7 +197,8 @@ C_INCLUDES =  \
 -IDrivers/BSP/STM32469I-Discovery \
 -IUtilities/Fonts \
 -IDrivers/BSP/Components/otm8009a \
--ICore/Custom
+-ICore/Custom \
+-IDrivers/BSP/Components
 
 
 # compile gcc flags

@@ -23,6 +23,7 @@ uint16_t *pcm_buffer_head = pcm_buffer;
 static mics_pcm_frame frame_current;
 
 volatile uint8_t data_ready = 0;
+volatile uint8_t playing = 0;
 
 void process_data()
 {
@@ -30,6 +31,12 @@ void process_data()
         return;
 
     BSP_AUDIO_IN_PDMToPCM(pdm_buffer_head, pcm_buffer_head);
+    if (0 == playing)
+    {
+        playing = 1;
+        BSP_AUDIO_OUT_Play(pcm_buffer, PCM_BUF_SIZE);
+    }
+
     frame_current.samples = pcm_buffer_head;
     frame_current.pdm_samples = pdm_buffer_head;
     data_ready = 0;
@@ -39,6 +46,12 @@ void mics_init()
 {
     frame_current.count = PDM_BUF_SIZE; // TODO: should be PCM
     frame_current.samples = pcm_buffer_head;
+
+    if (AUDIO_OK != BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_HEADPHONE, 70, DEFAULT_AUDIO_IN_FREQ) ) {
+        Error_Handler();
+    }
+
+    BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
 
     if (AUDIO_OK != BSP_AUDIO_IN_Init(AL_MIC_FREQUENCY, AL_MIC_BITRATE, AL_MIC_CHANNELS))
     {
@@ -62,7 +75,7 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
     pcm_buffer_head = &pcm_buffer[PCM_BUF_SIZE_HALF];
 }
 
-BSP_AUDIO_IN_TransferComplete_CallBack()
+void BSP_AUDIO_IN_TransferComplete_CallBack()
 {
     data_ready = 2;
     pdm_buffer_head = &pdm_buffer[0];
