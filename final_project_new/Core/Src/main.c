@@ -32,6 +32,8 @@
 #include "usb_host.h"
 #include "gpio.h"
 #include "fmc.h"
+/* User includes -------------------------------------------------------------*/
+#include "al_led.h"
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -72,7 +74,10 @@ int main(void)
   MX_PDM2PCM_Init();
   MX_USB_HOST_Init();
 
-  // User Code
+  // User Code initialization
+  al_led_init();
+
+  // User Code start
   bsp_test_screen();
 
   while (1)
@@ -98,7 +103,7 @@ void bsp_test_screen()
   BSP_LCD_SetTextColor(0xff000000);
   BSP_LCD_FillRect(0, 0, screen_width, screen_height);  
   
-  BSP_LCD_DisplayStringAt(0, 240 - 65, (uint8_t *)"BSP Example", CENTER_MODE);
+  BSP_LCD_DisplayStringAt(0, 240 - 65, (uint8_t *)"Audio Locator", CENTER_MODE);
 }
 
 /**

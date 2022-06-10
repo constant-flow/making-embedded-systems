@@ -108,7 +108,9 @@ Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_sdram.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_audio.c \
 Drivers/BSP/STM32469I-Discovery/stm32469i_discovery_lcd.c \
 Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2s.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c 
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c \
+Core/Custom/al_led.c
+
 
 # ASM sources
 ASM_SOURCES =  \
@@ -183,7 +185,8 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/DSP/Include \
 -IDrivers/BSP/STM32469I-Discovery \
 -IUtilities/Fonts \
--IDrivers/BSP/Components/otm8009a
+-IDrivers/BSP/Components/otm8009a \
+-ICore/Custom
 
 
 # compile gcc flags

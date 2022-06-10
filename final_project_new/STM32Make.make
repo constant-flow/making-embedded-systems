@@ -36,6 +36,7 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
+Core/Custom/al_led.c \
 Core/Src/crc.c \
 Core/Src/dma2d.c \
 Core/Src/dsihost.c \
@@ -181,6 +182,7 @@ AS_INCLUDES = \
 
 # C includes
 C_INCLUDES =  \
+-ICore/Custom \
 -ICore/Inc \
 -IDrivers/BSP/Components/otm8009a \
 -IDrivers/BSP/STM32469I-Discovery \
