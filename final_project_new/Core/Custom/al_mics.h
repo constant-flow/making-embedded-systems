@@ -4,7 +4,7 @@
 #include "stm32469i_discovery.h"
 #include "stm32469i_discovery_audio.h"
 
-void mics_init(TIM_HandleTypeDef *htim_i2s3);
+void mics_init();
 void mics_update();
 
 struct al_mic_pcm_frame

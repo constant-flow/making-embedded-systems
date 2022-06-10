@@ -36,7 +36,17 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
+Core/Custom/al_button.c \
+Core/Custom/al_direction.c \
+Core/Custom/al_display.c \
 Core/Custom/al_led.c \
+Core/Custom/al_logging.c \
+Core/Custom/al_main.c \
+Core/Custom/al_mics.c \
+Core/Custom/al_state.c \
+Core/Custom/console.c \
+Core/Custom/consoleCommands.c \
+Core/Custom/consoleIo.c \
 Core/Src/crc.c \
 Core/Src/dma2d.c \
 Core/Src/dsihost.c \

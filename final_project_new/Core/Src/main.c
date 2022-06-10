@@ -33,13 +33,13 @@
 #include "gpio.h"
 #include "fmc.h"
 /* User includes -------------------------------------------------------------*/
-#include "al_led.h"
+#include "al_main.h"
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
 void MX_USB_HOST_Process(void);
-void bsp_test_screen();
+
 /**
   * @brief  The application entry point.
   * @retval int
@@ -75,35 +75,13 @@ int main(void)
   MX_USB_HOST_Init();
 
   // User Code initialization
-  al_led_init();
-
-  // User Code start
-  bsp_test_screen();
+  al_init();  
 
   while (1)
   {  
+    al_loop();
     MX_USB_HOST_Process();  
   }
-}
-
-void bsp_test_screen()
-{  
-  if (BSP_LCD_Init() == LCD_ERROR)
-  {
-    /* Initialization Error */
-    Error_Handler();
-  }
-  
-  BSP_LCD_SelectLayer(0);
-  BSP_LCD_LayerDefaultInit(0, LCD_FB_START_ADDRESS);
-
-  uint32_t screen_width = BSP_LCD_GetXSize();
-  uint32_t screen_height = BSP_LCD_GetYSize();
-
-  BSP_LCD_SetTextColor(0xff000000);
-  BSP_LCD_FillRect(0, 0, screen_width, screen_height);  
-  
-  BSP_LCD_DisplayStringAt(0, 240 - 65, (uint8_t *)"Audio Locator", CENTER_MODE);
 }
 
 /**

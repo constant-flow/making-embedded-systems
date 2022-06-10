@@ -25,22 +25,6 @@ uint8_t MX_PDM2PCM_Process(uint16_t *pdm_buffer_head, uint16_t *pcm_buffer_head)
 
 static mics_pcm_frame frame_current;
 
-// DMA wrote 1st half
-void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-    dataReady = 1;
-    pdm_buffer_head = &pdm_buffer[0];
-    pcm_buffer_head = &pcm_buffer[0];
-}
-
-// DMA wrote 2nd half
-void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-    dataReady = 1;
-    pdm_buffer_head = &pdm_buffer[PDM_BUF_SIZE_HALF];
-    pcm_buffer_head = &pcm_buffer[PDM_BUF_SIZE_HALF];
-}
-
 void process_data()
 {
     if (dataReady == 0)
@@ -53,26 +37,11 @@ void process_data()
     frame_current.pdm_samples = pdm_buffer;
 }
 
-void mics_init(TIM_HandleTypeDef *htim_i2s3)
-{
-    HAL_TIM_PWM_Start(htim_i2s3, TIM_CHANNEL_2);
+void mics_init()
+{   
     frame_current.count = PDM_SAMPLES;
     frame_current.samples = pcm_buffer_head;
-
-    if (HAL_OK != HAL_I2S_Init(&hi2s3))
-    {
-        while (1)
-        {
-        };
-    }
-
-    if (HAL_OK != HAL_I2S_Receive_DMA(&hi2s3, pdm_buffer, PDM_BUF_SIZE))
-    {
-        while (1)
-        {
-        };
-    }
-    logging_log("✅ Mics: success");
+    logging_log("⚠️ Mics: NOT IMPLEMENTED YET");
 }
 
 void mics_update()
