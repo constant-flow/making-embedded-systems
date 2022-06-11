@@ -19,7 +19,7 @@ void state_init()
     state.tracking_mode = 1;
     state.state_changed_tracking_mode = 1;
 
-    state.detector_level = 255;
+    state.detector_level = 128;
     state.detector_level_changed = 1;
 }
 

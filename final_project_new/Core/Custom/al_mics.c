@@ -17,6 +17,7 @@ static mics_pcm_frame frame_current;
 
 volatile uint8_t data_ready = 0;
 volatile uint8_t playing = 0;
+volatile uint8_t new_result = 0;
 
 // #define USE_GENERATED_MIC_INPUT
 
@@ -24,6 +25,8 @@ void process_data()
 {
     if (0 == data_ready)
         return;
+
+    new_result = 1;
 
 #ifndef USE_GENERATED_MIC_INPUT
     BSP_AUDIO_IN_PDMToPCM(pdm_buffer_head, pcm_buffer_head);
@@ -145,5 +148,7 @@ void mics_update()
 
 mics_pcm_frame *mic_get_sample()
 {
+    frame_current.is_new_sample = new_result;
+    new_result = 0;
     return &frame_current;
 }

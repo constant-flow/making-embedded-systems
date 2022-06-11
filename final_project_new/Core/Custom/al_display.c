@@ -1,6 +1,7 @@
 #include "al_display.h"
 #include "stm32469i_discovery_lcd.h"
 #include "stm32f4xx.h"
+#include "arm_math.h"
 // extern DSI_HandleTypeDef hdsi;
 
 static uint32_t LAYER0_ADDRESS = LCD_FB_START_ADDRESS;
@@ -79,16 +80,35 @@ void display_draw_title()
         BSP_LCD_SetTextColor(AL_COLOR_CIRCLE);
         BSP_LCD_DrawCircle(tracking_center_x, tracking_center_y, radius_cirle);
 
+        BSP_LCD_SetTextColor(AL_COLOR_HEADING_TEXT);
+        BSP_LCD_SetBackColor(AL_COLOR_BACKGROUND);
+        BSP_LCD_DisplayStringAt(spacing, (title_height + FONT_H * 1.0f), (uint8_t *)"PCB plane mode", LEFT_MODE);
+
     } else if(last_tracking->mode == MODE_SCREEN_FRONT) {
         
         // Square
         BSP_LCD_SetTextColor(AL_COLOR_CIRCLE);
         BSP_LCD_DrawRect(tracking_center_x - radius_cirle, tracking_center_y - square_height/2, radius_cirle*2, square_height); 
+
+        for(int i=0; i<180; i+=5) {
+            float angle = i/180.0f*PI;
+            int x_tick = cos(angle)*radius_cirle + tracking_center_x;
+            int y_tick = tracking_center_y + square_height/2;
+            BSP_LCD_DrawLine(x_tick,y_tick, x_tick, y_tick - spacing/2);   
+            BSP_LCD_DrawLine(x_tick,y_tick-square_height, x_tick, y_tick - square_height+spacing/2);   
+        }
+
+        BSP_LCD_SetTextColor(AL_COLOR_HEADING_TEXT);
+        BSP_LCD_SetBackColor(AL_COLOR_BACKGROUND);
+        BSP_LCD_DisplayStringAt(spacing, (title_height + FONT_H * 1.0f), (uint8_t *)"Screen front mode", LEFT_MODE);
     }
 }
 
+int frame = 0;
+
 void al_display_update()
 {
+    if(frame++%10 != 0) return;
     if(last_mode != last_tracking->mode) {
         display_draw_title();
     }

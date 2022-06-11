@@ -22,6 +22,7 @@ struct al_mic_pcm_frame
     uint16_t count;
     uint16_t *samples;
     uint16_t *pdm_samples;
+    uint8_t is_new_sample;
 };
 
 typedef struct al_mic_pcm_frame mics_pcm_frame;

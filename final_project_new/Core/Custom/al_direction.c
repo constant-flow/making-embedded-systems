@@ -10,6 +10,9 @@ static tracking_dir last_dir = {0.0f, 0.0f, 0.0f, MODE_UNINITIALIZED};
 static mics_pcm_frame *audio_frame;
 
 static float detection_threshold = MIN_DETECTION_THRESHOLD;
+static float angle_target = 0;
+static float angle_target_smoothing = 0.995f;
+static float angle_smoothed = 0;
 
 // #define USE_GENERATED_SINE_INPUT
 // #define HALT_AFTER_FIRST_SAMPLE
@@ -62,7 +65,6 @@ void calc_float_channels(mics_pcm_frame *input)
 
 void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
 {
-    // TODO: calculate the real correlation between signals
     calc_float_channels(input);
 
     arm_correlate_f32(channel_left, PCM_BUF_SIZE_HALF, channel_right, PCM_BUF_SIZE_HALF, result_corr);
@@ -122,8 +124,13 @@ void direction_update()
     float angle = acos(delayed_distance / MICS_DISTANCE);
 
     float corrected_angle = angle + MICS_BASELINE_TO_SCREEN_ANGLE;
-    last_dir.x = sin(corrected_angle);
-    last_dir.y = cos(corrected_angle);
+
+    angle_target = corrected_angle;
+
+    angle_smoothed = angle_target * (1 - angle_target_smoothing) + angle_smoothed * angle_target_smoothing;
+
+    last_dir.x = sin(angle_smoothed);
+    last_dir.y = cos(angle_smoothed);
 
 #ifdef HALT_AFTER_FIRST_SAMPLE
     static int halt_after_sample = 0;
@@ -137,11 +144,13 @@ void direction_input(mics_pcm_frame *input)
     audio_frame = input;
 }
 
-void direction_set_threshold(uint8_t threshold) {    
-    detection_threshold = ((float) threshold)/255 * (MAX_DETECTION_THRESHOLD - MIN_DETECTION_THRESHOLD) + MIN_DETECTION_THRESHOLD;
+void direction_set_threshold(uint8_t threshold)
+{
+    detection_threshold = ((float)threshold) / 255 * (MAX_DETECTION_THRESHOLD - MIN_DETECTION_THRESHOLD) + MIN_DETECTION_THRESHOLD;
     logging_log("Mic: threshold now: %f", detection_threshold);
 }
 
-void direction_set_tracking_mode(enum al_tracking_mode mode) {
+void direction_set_tracking_mode(enum al_tracking_mode mode)
+{
     last_dir.mode = mode;
 }
