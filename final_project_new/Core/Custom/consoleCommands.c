@@ -30,7 +30,7 @@ static const sConsoleCommandTable_T mConsoleCommandTable[] =
 		{"help", &ConsoleCommandHelp, HELP("Lists the commands available")},
 		{"ver", &ConsoleCommandVer, HELP("Get the version string")},
 		{"threshold", &ConsoleCommandSetDetectorThreshold, HELP("Set detector sensitivity form 0-255")},
-		{"mode", &ConsoleCommandMode, HELP("Switch between 2D/3D Mode: `2` for 2D, `3` for 3D")},
+		{"mode", &ConsoleCommandMode, HELP("Switch between In-PCB-Plane-Tracking / In-Front-Of-Display-Tracking: `1` for PCB, `2` for In-Front")},
 
 		CONSOLE_COMMAND_TABLE_END // must be LAST
 };
@@ -97,7 +97,7 @@ static eCommandResult_T ConsoleCommandSetDetectorThreshold(const char buffer[])
 		}
 		else
 		{
-			ConsoleIoSendString("Error: detector threshold not in bounds");
+			ConsoleIoSendString("Error: detector threshold not in bounds (every sound : 0 - 255 : loud sounds)");
 			result = COMMAND_ERROR;
 		}
 
@@ -112,19 +112,19 @@ static eCommandResult_T ConsoleCommandMode(const char buffer[])
 	eCommandResult_T result = ConsoleReceiveParamInt16(buffer, 1, &mode);
 	if (COMMAND_SUCCESS == result)
 	{
-		if (mode == 2)
+		if (mode == 1)
 		{
-			ConsoleIoSendString("Set to 2D Mode");
-			state_set_tracking_mode(2);
+			ConsoleIoSendString("Set to PCB-Plane Tracking");
+			state_set_tracking_mode(1);
 		}
-		else if (mode == 3)
+		else if (mode == 2)
 		{
-			ConsoleIoSendString("Set to 3D Mode");
-			state_set_tracking_mode(3);
+			ConsoleIoSendString("Set to In-Front-Of-Screen Tracking");
+			state_set_tracking_mode(2);
 		}
 		else
 		{
-			ConsoleIoSendString("Unknown Mode set, either use `2`(2D Mode) or `3`(3D Mode)");
+			ConsoleIoSendString("Unknown Mode set, either use `1`(PCB-Plane) or `2`(In-Front-Of-Screen)");
 			result = COMMAND_PARAMETER_ERROR;
 		}
 

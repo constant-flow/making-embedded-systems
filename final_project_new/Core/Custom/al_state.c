@@ -16,7 +16,7 @@ struct audio_locator_state state;
 
 void state_init()
 {
-    state.tracking_mode = 2;
+    state.tracking_mode = 1;
     state.state_changed_tracking_mode = 1;
 
     state.detector_level = 255;
@@ -27,7 +27,7 @@ void state_set_tracking_mode(int16_t newMode)
 {
     if (state.tracking_mode == newMode)
         return;
-    if (newMode == 2 || newMode == 3)
+    if (newMode == 1 || newMode == 2)
     {
         state.state_changed_tracking_mode = 1;
         state.tracking_mode = newMode;
@@ -51,8 +51,8 @@ void state_processed_tracking_mode_change()
 
 int state_set_tracking_threshold(int16_t newLevel)
 {
-    // if (newLevel > 255)
-    //     return 0; // out of expected bounds
+    if (newLevel > 255 || newLevel < 0)
+        return 0; // out of expected bounds
 
     state.detector_level = newLevel;
     state.detector_level_changed = 1;
@@ -78,7 +78,7 @@ void state_tracking_mode_toggle()
 {
     if (state_get_tracking_mode() == 2)
     {
-        state_set_tracking_mode(3);
+        state_set_tracking_mode(1);
     }
     else
     {

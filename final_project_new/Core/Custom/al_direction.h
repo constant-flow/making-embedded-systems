@@ -11,8 +11,8 @@
 enum al_tracking_mode
 {
     MODE_UNINITIALIZED = 0,
-    MODE_2D = 2,
-    MODE_3D = 3
+    MODE_PCB_PLANE = 1,
+    MODE_SCREEN_FRONT = 2
 };
 
 typedef enum al_tracking_mode tracking_mode;
@@ -39,5 +39,11 @@ void direction_update();
 void direction_init();
 
 void direction_input(mics_pcm_frame *input);
+
+// sets the threshold how loud sounds needs to be to be detected (small = faster detected)
+void direction_set_threshold(uint8_t threshold);
+
+// sets the tracking plane
+void direction_set_tracking_mode(enum al_tracking_mode mode);
 
 #endif // HEADER_AL_DIRECTION

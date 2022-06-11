@@ -13,6 +13,9 @@ static int x = 80;
 static int y = 30;
 static int radius_indicator = 120;
 static int radius_cirle = 120;
+static int square_height = 60;
+static int square_indicator = 60;
+static int last_mode = 0;
 
 const static uint32_t AL_COLOR_HEADING_BACKGROUND = 0xff404040;
 const static uint32_t AL_COLOR_HEADING_TEXT = 0xffFFB100;
@@ -45,6 +48,7 @@ void al_display_init()
     tracking_center_y = (screen_height - title_height) / 2 + title_height;
     radius_cirle = (screen_height - title_height - 2 * spacing) / 2;
     radius_indicator = radius_cirle - spacing;
+    square_indicator = square_height - spacing;
 
     BSP_LCD_LayerDefaultInit(0, LAYER0_ADDRESS);
     BSP_LCD_SelectLayer(0);
@@ -69,40 +73,69 @@ void display_draw_title()
     BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
     BSP_LCD_FillRect(0, title_height, screen_width, screen_height);
 
-    // CIRCLE
-    BSP_LCD_SetTextColor(AL_COLOR_CIRCLE);
-    BSP_LCD_DrawCircle(tracking_center_x, tracking_center_y, radius_cirle);
+    if (last_tracking->mode == MODE_PCB_PLANE)
+    {
+        // CIRCLE
+        BSP_LCD_SetTextColor(AL_COLOR_CIRCLE);
+        BSP_LCD_DrawCircle(tracking_center_x, tracking_center_y, radius_cirle);
+
+    } else if(last_tracking->mode == MODE_SCREEN_FRONT) {
+        
+        // Square
+        BSP_LCD_SetTextColor(AL_COLOR_CIRCLE);
+        BSP_LCD_DrawRect(tracking_center_x - radius_cirle, tracking_center_y - square_height/2, radius_cirle*2, square_height); 
+    }
 }
 
 void al_display_update()
 {
-    // clear last line with BG color
-    BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
-    BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
+    if(last_mode != last_tracking->mode) {
+        display_draw_title();
+    }
 
-    // calculate/draw new indicator direction
-    x = last_tracking->x * radius_indicator;
-    y = last_tracking->y * radius_indicator;
-    BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
-    BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
-    // HAL_DSI_Refresh(&hdsi);
+    if (last_tracking->mode == MODE_PCB_PLANE)
+    {
+        // clear last line with BG color
+        BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
+        BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
 
-    al_draw_audio();
+        // calculate/draw new indicator direction
+        x = last_tracking->x * radius_indicator;
+        y = last_tracking->y * radius_indicator;
+        BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
+        BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
+
+    } else if(last_tracking->mode == MODE_SCREEN_FRONT) {
+        // clear last line with BG color
+        int line_half_height = square_indicator / 2;
+        BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
+        BSP_LCD_DrawLine(tracking_center_x + x, tracking_center_y - line_half_height, tracking_center_x + x, tracking_center_y + line_half_height);
+        
+        // calculate/draw new indicator direction
+        x = last_tracking->x * radius_indicator;
+        y = last_tracking->y * radius_indicator;
+        BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
+        BSP_LCD_DrawLine(tracking_center_x + x, tracking_center_y - line_half_height, tracking_center_x + x, tracking_center_y + line_half_height);
+    }
+
+    last_mode = last_tracking->mode;
+
+    // al_draw_audio();
 }
 
 int cnt = 0;
 void al_draw_audio(void)
 {
-    if(cnt%1000 != 0) return; //draw every 1000th time
+    if (cnt % 1000 != 0)
+        return; // draw every 1000th time
     uint16_t x = 10;
     uint16_t y = title_height;
 
     uint16_t audio_area_w = 200;
     uint16_t audio_area_h = 50;
 
-    
     BSP_LCD_SetTextColor(0xff202020);
-    
+
     BSP_LCD_FillRect(x, y, audio_area_w, audio_area_h * 2);
 
     uint16_t gap = audio_area_w / pcm_frame->count;

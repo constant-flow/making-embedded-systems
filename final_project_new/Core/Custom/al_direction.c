@@ -3,11 +3,16 @@
 #include "al_logging.h"
 #include "main.h"
 
+#define MIN_DETECTION_THRESHOLD 0.1f
+#define MAX_DETECTION_THRESHOLD 5.0f
+
 static tracking_dir last_dir = {0.0f, 0.0f, 0.0f, MODE_UNINITIALIZED};
 static mics_pcm_frame *audio_frame;
 
+static float detection_threshold = MIN_DETECTION_THRESHOLD;
+
 // #define USE_GENERATED_SINE_INPUT
-#define HALT_AFTER_FIRST_SAMPLE
+// #define HALT_AFTER_FIRST_SAMPLE
 
 // distance between microphones in cm
 #define MICS_DISTANCE 12.4f
@@ -50,9 +55,9 @@ void calc_float_channels(mics_pcm_frame *input)
     {
         channel_left[i] = toFloat(input->samples[i * 2]);
         channel_right[i] = toFloat(input->samples[i * 2 + 1]);
-        logging_log("%d : %f\t|\t%d : %f", input->samples[i * 2], channel_left[i], input->samples[i * 2 + 1], channel_right[i]);
+        // logging_log("%d : %f\t|\t%d : %f", input->samples[i * 2], channel_left[i], input->samples[i * 2 + 1], channel_right[i]);
     }
-    logging_log("@@@");
+    // logging_log("@@@");
 }
 
 void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
@@ -67,7 +72,7 @@ void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
 
     for (int i = 0; i < CORR_BUF_SIZE; i++)
     {
-        logging_log("i=%d : \t '%d' '%f'", i, (int16_t)(result_corr[i] * 128), result_corr[i]);
+        // logging_log("i=%d : \t '%d' '%f'", i, (int16_t)(result_corr[i] * 128), result_corr[i]);
 
         if (result_corr[i] > max_corr_value)
         {
@@ -75,12 +80,11 @@ void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
             max_corr_value = result_corr[i];
         }
     }
-    logging_log("---");
-    // Error_Handler();
+    // logging_log("---");
 
-    if (max_corr_value > 0.3)
+    if (max_corr_value > detection_threshold)
     {
-        logging_log("corr above threshold");
+        // logging_log("corr above threshold");
         corr->max_shift_samples = max_corr_id;
         corr->max_val = max_corr_value;
     }
@@ -91,7 +95,7 @@ void direction_init()
     last_dir.x = 1;
     last_dir.y = 0;
     last_dir.z = 0;
-    last_dir.mode = MODE_UNINITIALIZED;
+    last_dir.mode = MODE_SCREEN_FRONT;
     corr.mid_id = CORR_BUF_SIZE / 2;
 }
 
@@ -109,7 +113,7 @@ void direction_update()
     // keep in bounds (-90° to 90°)
     int16_t shifted_sample_amount = corr.max_shift_samples - corr.mid_id;
     float delayed_distance = shifted_sample_amount * DIST_BETWEEN_SAMPLES;
-    logging_log("→ Shifted by %d sample\tdist: %f", shifted_sample_amount, delayed_distance);
+    // logging_log("→ Shifted by %d sample\tdist: %f", shifted_sample_amount, delayed_distance);
     if (delayed_distance > MICS_DISTANCE)
         delayed_distance = MICS_DISTANCE;
     if (delayed_distance < -MICS_DISTANCE)
@@ -131,4 +135,13 @@ void direction_update()
 void direction_input(mics_pcm_frame *input)
 {
     audio_frame = input;
+}
+
+void direction_set_threshold(uint8_t threshold) {    
+    detection_threshold = ((float) threshold)/255 * (MAX_DETECTION_THRESHOLD - MIN_DETECTION_THRESHOLD) + MIN_DETECTION_THRESHOLD;
+    logging_log("Mic: threshold now: %f", detection_threshold);
+}
+
+void direction_set_tracking_mode(enum al_tracking_mode mode) {
+    last_dir.mode = mode;
 }

@@ -53,12 +53,13 @@ void handle_state()
     {
         state_processed_tracking_mode_change();
         logging_log("Changed to %dD mode", state_get_tracking_mode());
+        direction_set_tracking_mode(state_get_tracking_mode());
 
         // Show state via LED // TODO make led code independent via al_led.h
         al_led_all_off();
-        if (state_get_tracking_mode() == 2)
+        if (state_get_tracking_mode() == 1)
             BSP_LED_On(LED2);
-        if (state_get_tracking_mode() == 3)
+        if (state_get_tracking_mode() == 2)
             BSP_LED_On(LED3);
     }
 
@@ -66,6 +67,7 @@ void handle_state()
     {
         state_processed_tracking_threshold_change();
         logging_log("Threshold set to %d", state_get_tracking_threshold());
+        direction_set_threshold(state_get_tracking_threshold());
     }
 }
 
