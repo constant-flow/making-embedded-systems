@@ -8,6 +8,8 @@
         "stm32f4xx_it.h": "c",
         "main.h": "c",
         "stm32469i_discovery_audio.h": "c",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "float.h": "c",
+        "math.h": "c"
     }
 }

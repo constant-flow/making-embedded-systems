@@ -28,7 +28,7 @@ static mics_pcm_frame frame_current;
 volatile uint8_t data_ready = 0;
 volatile uint8_t playing = 0;
 
-// #define USE_GENERATED_MIC_INPUT
+#define USE_GENERATED_MIC_INPUT
 
 void process_data()
 {

@@ -244,8 +244,9 @@ CXXFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 LDSCRIPT = STM32F469NIHx_FLASH.ld
 
 # libraries
-LIBS = -l:libPDMFilter_CM4_GCC_wc32.a 
+LIBS = -l:libPDMFilter_CM4_GCC_wc32.a -l:libPDMFilter_CM4_GCC_wc32.a -larm_cortexM4lf_math 
 LIBDIR = \
+-LDrivers/CMSIS/Lib/GCC \
 -LMiddlewares/ST/STM32_Audio/Addons/PDM/Lib
 
 

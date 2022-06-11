@@ -223,9 +223,10 @@ LDSCRIPT = STM32F469NIHx_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys  \
--l:libPDMFilter_CM4_GCC_wc32.a
+-l:libPDMFilter_CM4_GCC_wc32.a -larm_cortexM4lf_math
 LIBDIR =  \
--LMiddlewares/ST/STM32_Audio/Addons/PDM/Lib
+-LMiddlewares/ST/STM32_Audio/Addons/PDM/Lib \
+-LDrivers/CMSIS/Lib/GCC
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections  --specs=rdimon.specs
 
 # default action: build all

@@ -15,6 +15,7 @@ mics_pcm_frame *pcm_frame = NULL;
 // pre-defs
 void bsp_test_screen();
 void led_toggle();
+void handle_state();
 
 // audio locator init all variables and peripherals
 void al_init()
@@ -37,29 +38,34 @@ void al_loop()
     pcm_frame = mic_get_sample();
     display_set_audio(pcm_frame);
 
+    direction_input(pcm_frame);
     direction_update();
     al_led_green_toggle();
     al_display_update();
 
     ConsoleProcess();
+    handle_state();
+}
 
+void handle_state()
+{
     if (state_changed_tracking_mode())
     {
-      state_processed_tracking_mode_change();
-      logging_log("Changed to %dD mode", state_get_tracking_mode());      
+        state_processed_tracking_mode_change();
+        logging_log("Changed to %dD mode", state_get_tracking_mode());
 
-      // Show state via LED // TODO make led code independent via al_led.h
-      al_led_all_off();
-      if (state_get_tracking_mode() == 2)
-        BSP_LED_On(LED2);
-      if (state_get_tracking_mode() == 3)
-        BSP_LED_On(LED3);
+        // Show state via LED // TODO make led code independent via al_led.h
+        al_led_all_off();
+        if (state_get_tracking_mode() == 2)
+            BSP_LED_On(LED2);
+        if (state_get_tracking_mode() == 3)
+            BSP_LED_On(LED3);
     }
 
     if (state_changed_tracking_threshold())
     {
-      state_processed_tracking_threshold_change();
-      logging_log("Threshold set to %d", state_get_tracking_threshold());      
+        state_processed_tracking_threshold_change();
+        logging_log("Threshold set to %d", state_get_tracking_threshold());
     }
 }
 
@@ -85,5 +91,5 @@ void bsp_test_screen()
 
 void led_toggle()
 {
-  state_tracking_mode_toggle();
+    state_tracking_mode_toggle();
 }

@@ -38,6 +38,6 @@ tracking_dir *direction_get();
 // calculate (possibly) new direction
 void direction_update();
 
-void direction_input(mics_pcm_frame *input, uint8_t channel_id);
+void direction_input(mics_pcm_frame *input);
 
 #endif // HEADER_AL_DIRECTION
