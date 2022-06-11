@@ -177,16 +177,18 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
+-DARM_MATH_CM4 \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
--DUSE_STM32469I_DISCO_REVB 
+-DUSE_STM32469I_DISCO_REVB
 
 
 # CXX defines
 CXX_DEFS =  \
+-DARM_MATH_CM4 \
 -DSTM32F469xx \
 -DUSE_HAL_DRIVER \
--DUSE_STM32469I_DISCO_REVB 
+-DUSE_STM32469I_DISCO_REVB
 
 
 # AS includes
@@ -251,7 +253,7 @@ LIBDIR = \
 
 
 # Additional LD Flags from config file
-ADDITIONALLDFLAGS = -specs=nano.specs -specs=rdimon.specs 
+ADDITIONALLDFLAGS = -specs=nano.specs -specs=rdimon.specs -u _printf_float 
 
 LDFLAGS = $(MCU) $(ADDITIONALLDFLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 

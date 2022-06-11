@@ -25,9 +25,9 @@ void al_init()
     state_init();
     al_led_init();
     al_display_init();
+    direction_init();
     button_init(led_toggle);
 
-    direction_reset();
     display_set_tracking(direction_get());
     mics_init();
 }

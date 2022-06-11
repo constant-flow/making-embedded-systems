@@ -4,16 +4,6 @@
 
 // helpful ressource https://www.youtube.com/watch?v=zlGSxZGwj-E
 
-const uint32_t AL_MIC_FREQUENCY = DEFAULT_AUDIO_IN_FREQ;
-const uint32_t AL_MIC_BITRATE = DEFAULT_AUDIO_IN_BIT_RESOLUTION;
-const uint32_t AL_MIC_CHANNELS = DEFAULT_AUDIO_IN_CHANNEL_NBR;
-
-#define PDM_BUF_SIZE (INTERNAL_BUFF_SIZE)
-#define PDM_BUF_SIZE_HALF (PDM_BUF_SIZE / 2)
-
-#define PCM_BUF_SIZE (PDM_BUF_SIZE / 8)
-#define PCM_BUF_SIZE_HALF (PCM_BUF_SIZE / 2)
-
 #define PCM_SLOTS 2
 
 uint16_t pdm_buffer[PDM_BUF_SIZE];
@@ -48,30 +38,43 @@ void process_data()
         }
         pcm_buffer_head_index = 0;
     }
-    pcm_buffer_head = &pcm_buffer[pcm_buffer_head_index];
+
 #endif
 
     frame_current.samples = pcm_buffer_head;
     frame_current.pdm_samples = pdm_buffer_head;
     data_ready = 0;
+    pcm_buffer_head = &pcm_buffer[pcm_buffer_head_index];
 }
 
 void setup_input_from_generator()
 {
     const uint16_t CHANNEL_L = 0;
     const uint16_t CHANNEL_R = 1;
-    uint16_t shift = 8;
+    uint16_t shift = -7;
 
     uint16_t noise[PCM_BUF_SIZE];
-    for (int i = 0; i < PCM_BUF_SIZE; i += 2)
+    uint16_t signal[PCM_BUF_SIZE];
+
+    uint16_t noise_reduction = 2048;
+    uint16_t noise_factor = 0;
+    for (int i = 0; i < PCM_BUF_SIZE; i++)
     {
-        noise[i] = rand();
+        noise[i] = rand() / noise_reduction * noise_factor;
+        signal[i] = UINT16_MAX / 2;
     }
 
-    for (int i = 0; i < PCM_BUF_SIZE; i += 2)
+    signal[2] = UINT16_MAX;
+    signal[3] = UINT16_MAX / 3;
+    signal[4] = UINT16_MAX / 4;
+    signal[5] = UINT16_MAX / 8;
+    signal[6] = UINT16_MAX / 16;
+
+    for (int i = 0; i < PCM_BUF_SIZE_HALF; i += 1)
     {
-        pcm_buffer[i + CHANNEL_L] = noise[i];
-        pcm_buffer[i + CHANNEL_R] = noise[(i + shift) % PCM_BUF_SIZE];
+        uint8_t shift_pos = (i + shift) % PCM_BUF_SIZE_HALF;
+        pcm_buffer[i * 2 + CHANNEL_L] = noise[i] + signal[i];
+        pcm_buffer[i * 2 + CHANNEL_R] = noise[shift_pos] + signal[shift_pos];
     }
 
     logging_log("⚠️ Mics: Init success from generator not mems microphones");
@@ -96,6 +99,11 @@ void setup_input_from_mems_mics()
 
 void mics_init()
 {
+    for (int i = 0; i < PCM_BUF_SIZE * PCM_SLOTS; i++)
+    {
+        pcm_buffer[i] = 1234;
+    }
+
     frame_current.count = PCM_BUF_SIZE;
     frame_current.samples = pcm_buffer_head;
 

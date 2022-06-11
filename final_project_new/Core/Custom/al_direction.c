@@ -1,47 +1,98 @@
 #include "al_direction.h"
-#include "math.h"
+#include "arm_math.h"
+#include "al_logging.h"
+#include "main.h"
 
-#define PI 3.14159265358979323846264338328
 static tracking_dir last_dir = {0.0f, 0.0f, 0.0f, MODE_UNINITIALIZED};
 static mics_pcm_frame *audio_frame;
 
 // #define USE_GENERATED_SINE_INPUT
+#define HALT_AFTER_FIRST_SAMPLE
 
 // distance between microphones in cm
 #define MICS_DISTANCE 12.4f
-#define MICS_BASELINE_TO_SCREEN_ANGLE (tan(1.8f/11.7f)-PI/2)  
+#define MICS_BASELINE_TO_SCREEN_ANGLE (tan(1.8f / 11.7f) - PI / 2)
 
 // in cm/s
 #define SPEED_OF_SOUND 34300
 
 // how far (in cm) did a soundwave travel one sample later ()
-#define DIST_BETWEEN_SAMPLES ((float) SPEED_OF_SOUND / DEFAULT_AUDIO_IN_FREQ)
+#define DIST_BETWEEN_SAMPLES ((float)SPEED_OF_SOUND / DEFAULT_AUDIO_IN_FREQ)
 
-typedef struct pcm_correlation {
-    int16_t max_shift_samples; // how many samples were the the two signals shifted
-    uint16_t max_val; // how much did they correlate
+#define CORR_BUF_SIZE (PCM_BUF_SIZE_HALF * 2 - 1)
+
+typedef struct pcm_correlation
+{
+    int16_t max_shift_samples; // how many samples were the the two signals phase shifted
+    uint16_t max_val;          // how much did they correlate
+    uint16_t mid_id;           // which sample id in the correlation means
+                               //`phase shift` = 0 (both signals came at the same time)
 } pcm_correlation;
 
 static pcm_correlation corr;
-
-void direction_reset()
-{
-    last_dir.x = 1;
-    last_dir.y = 0;
-    last_dir.z = 0;
-    last_dir.mode = MODE_UNINITIALIZED;
-}
+static float32_t channel_right[PCM_BUF_SIZE_HALF];
+static float32_t channel_left[PCM_BUF_SIZE_HALF];
+static float32_t result_corr[CORR_BUF_SIZE];
 
 tracking_dir *direction_get()
 {
     return &last_dir;
 }
 
-void get_correlation(mics_pcm_frame *input, pcm_correlation *corr) {
-    //TODO: calculate the real correlation between signals
+inline float toFloat(uint16_t val)
+{
+    return ((float32_t)val) / ((float32_t)UINT16_MAX) - 0.5f;
+}
 
-    corr->max_shift_samples = 0;
-    corr->max_val = 100;
+void calc_float_channels(mics_pcm_frame *input)
+{
+    for (int i = 0; i < PCM_BUF_SIZE_HALF; i++)
+    {
+        channel_left[i] = toFloat(input->samples[i * 2]);
+        channel_right[i] = toFloat(input->samples[i * 2 + 1]);
+        logging_log("%d : %f\t|\t%d : %f", input->samples[i * 2], channel_left[i], input->samples[i * 2 + 1], channel_right[i]);
+    }
+    logging_log("@@@");
+}
+
+void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
+{
+    // TODO: calculate the real correlation between signals
+    calc_float_channels(input);
+
+    arm_correlate_f32(channel_left, PCM_BUF_SIZE_HALF, channel_right, PCM_BUF_SIZE_HALF, result_corr);
+
+    float32_t max_corr_value = -100;
+    uint8_t max_corr_id = 0;
+
+    for (int i = 0; i < CORR_BUF_SIZE; i++)
+    {
+        logging_log("i=%d : \t '%d' '%f'", i, (int16_t)(result_corr[i] * 128), result_corr[i]);
+
+        if (result_corr[i] > max_corr_value)
+        {
+            max_corr_id = i;
+            max_corr_value = result_corr[i];
+        }
+    }
+    logging_log("---");
+    // Error_Handler();
+
+    if (max_corr_value > 0.3)
+    {
+        logging_log("corr above threshold");
+        corr->max_shift_samples = max_corr_id;
+        corr->max_val = max_corr_value;
+    }
+}
+
+void direction_init()
+{
+    last_dir.x = 1;
+    last_dir.y = 0;
+    last_dir.z = 0;
+    last_dir.mode = MODE_UNINITIALIZED;
+    corr.mid_id = CORR_BUF_SIZE / 2;
 }
 
 void direction_update()
@@ -56,15 +107,25 @@ void direction_update()
     get_correlation(audio_frame, &corr);
 
     // keep in bounds (-90° to 90°)
-    float delayed_distance = corr.max_shift_samples * DIST_BETWEEN_SAMPLES;
-    if(delayed_distance > MICS_DISTANCE) delayed_distance = MICS_DISTANCE;
-    if(delayed_distance < -MICS_DISTANCE) delayed_distance = -MICS_DISTANCE; 
+    int16_t shifted_sample_amount = corr.max_shift_samples - corr.mid_id;
+    float delayed_distance = shifted_sample_amount * DIST_BETWEEN_SAMPLES;
+    logging_log("→ Shifted by %d sample\tdist: %f", shifted_sample_amount, delayed_distance);
+    if (delayed_distance > MICS_DISTANCE)
+        delayed_distance = MICS_DISTANCE;
+    if (delayed_distance < -MICS_DISTANCE)
+        delayed_distance = -MICS_DISTANCE;
 
     float angle = acos(delayed_distance / MICS_DISTANCE);
 
     float corrected_angle = angle + MICS_BASELINE_TO_SCREEN_ANGLE;
     last_dir.x = sin(corrected_angle);
     last_dir.y = cos(corrected_angle);
+
+#ifdef HALT_AFTER_FIRST_SAMPLE
+    static int halt_after_sample = 0;
+    if (halt_after_sample++)
+        Error_Handler();
+#endif
 }
 
 void direction_input(mics_pcm_frame *input)

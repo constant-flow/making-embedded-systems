@@ -68,7 +68,7 @@ int main(void)
   // MX_SAI1_Init();
   // MX_SDIO_SD_Init();
   // MX_TIM1_Init();
-  // MX_USART3_UART_Init();
+  MX_USART3_UART_Init();
   // MX_USART6_UART_Init();
   // MX_FATFS_Init();
   // MX_PDM2PCM_Init();

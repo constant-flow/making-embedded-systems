@@ -29,14 +29,14 @@ struct al_tracking_direction
 
 typedef struct al_tracking_direction tracking_dir;
 
-// resets the tracing dir and tracking mode
-void direction_reset();
-
 // returns last calculated direction towards a loud noise
 tracking_dir *direction_get();
 
 // calculate (possibly) new direction
 void direction_update();
+
+// initializes parameters, resets the tracking dir and tracking mode
+void direction_init();
 
 void direction_input(mics_pcm_frame *input);
 

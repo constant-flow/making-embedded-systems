@@ -10,6 +10,9 @@
         "stm32469i_discovery_audio.h": "c",
         "cstdlib": "cpp",
         "float.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "al_logging.h": "c",
+        "al_mics.h": "c",
+        "al_direction.h": "c"
     }
 }

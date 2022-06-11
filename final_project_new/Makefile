@@ -171,7 +171,8 @@ AS_DEFS =
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F469xx \
--DUSE_STM32469I_DISCO_REVB 
+-DUSE_STM32469I_DISCO_REVB \
+-DARM_MATH_CM4
 
 
 # AS includes
@@ -227,7 +228,7 @@ LIBS = -lc -lm -lnosys  \
 LIBDIR =  \
 -LMiddlewares/ST/STM32_Audio/Addons/PDM/Lib \
 -LDrivers/CMSIS/Lib/GCC
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections  --specs=rdimon.specs
+LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections --specs=rdimon.specs -u _printf_float
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin

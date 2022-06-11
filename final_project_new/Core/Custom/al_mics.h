@@ -4,6 +4,16 @@
 #include "stm32469i_discovery.h"
 #include "stm32469i_discovery_audio.h"
 
+#define AL_MIC_FREQUENCY DEFAULT_AUDIO_IN_FREQ
+#define AL_MIC_BITRATE DEFAULT_AUDIO_IN_BIT_RESOLUTION
+#define AL_MIC_CHANNELS DEFAULT_AUDIO_IN_CHANNEL_NBR
+
+#define PDM_BUF_SIZE (INTERNAL_BUFF_SIZE)
+#define PDM_BUF_SIZE_HALF (PDM_BUF_SIZE / 2)
+
+#define PCM_BUF_SIZE (PDM_BUF_SIZE / 8)
+#define PCM_BUF_SIZE_HALF (PCM_BUF_SIZE / 2)
+
 void mics_init();
 void mics_update();
 
