@@ -78,5 +78,7 @@ void USART3_IRQHandler()
         dataAvailable = true;
     if (receivedIndex >= MAX_BUFFER_LEN - 1)
         dataAvailable = true;
+    
+    HAL_UART_Transmit(&huart3, &receivedChar, 1, 1000);
     HAL_UART_Receive_IT(&huart3, &receivedChar, 1);
 }

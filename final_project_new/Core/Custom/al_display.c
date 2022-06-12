@@ -140,26 +140,53 @@ void al_display_update()
     {
         // clear last line with BG color
         BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
-        BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
+        int x1 = tracking_center_x;
+        int y1 = tracking_center_y;
+        int x2 = tracking_center_x + x;
+        int y2 = tracking_center_y + y;
+        BSP_LCD_DrawLine(x1, y1, x2, y2);
+        BSP_LCD_DrawLine(x1+1, y1, x2+1, y2);
+        BSP_LCD_DrawLine(x1, y1+1, x2, y2+1);
+        BSP_LCD_DrawLine(x1-1, y1, x2-1, y2);
+        BSP_LCD_DrawLine(x1, y1-1, x2, y2-1);
 
         // calculate/draw new indicator direction
         x = tracking->x * radius_indicator;
         y = tracking->y * radius_indicator;
+        x2 = tracking_center_x + x;
+        y2 = tracking_center_y + y;
         BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
-        BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
+        // BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
+        BSP_LCD_DrawLine(x1, y1, x2, y2);
+        BSP_LCD_DrawLine(x1+1, y1, x2+1, y2);
+        BSP_LCD_DrawLine(x1, y1+1, x2, y2+1);
+        BSP_LCD_DrawLine(x1-1, y1, x2-1, y2);
+        BSP_LCD_DrawLine(x1, y1-1, x2, y2-1);
     }
     else if (tracking->mode == MODE_SCREEN_FRONT)
     {
         // clear last line with BG color
         int line_half_height = square_indicator / 2;
         BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
-        BSP_LCD_DrawLine(tracking_center_x + x, tracking_center_y - line_half_height, tracking_center_x + x, tracking_center_y + line_half_height);
+        int x1 = tracking_center_x + x;
+        int y1 = tracking_center_y - line_half_height;
+        int x2 = tracking_center_x + x;
+        int y2 = tracking_center_y + line_half_height;
+        BSP_LCD_DrawLine(x1, y1, x2, y2);
+        BSP_LCD_DrawLine(x1-1, y1+1, x2-1, y2-1);
+        BSP_LCD_DrawLine(x1+1, y1+1, x2+1, y2-1);     
 
         // calculate/draw new indicator direction
         x = tracking->x * radius_indicator;
         y = tracking->y * radius_indicator;
         BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
-        BSP_LCD_DrawLine(tracking_center_x + x, tracking_center_y - line_half_height, tracking_center_x + x, tracking_center_y + line_half_height);
+        x1 = tracking_center_x + x;
+        y1 = tracking_center_y - line_half_height;
+        x2 = tracking_center_x + x;
+        y2 = tracking_center_y + line_half_height;
+        BSP_LCD_DrawLine(x1, y1, x2, y2);
+        BSP_LCD_DrawLine(x1-1, y1+1, x2-1, y2-1);
+        BSP_LCD_DrawLine(x1+1, y1+1, x2+1, y2-1);   
     }
 
     last_mode = tracking->mode;
