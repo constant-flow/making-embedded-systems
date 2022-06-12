@@ -1,4 +1,4 @@
-# Project Report - Audio Locator (Draft)
+# Project Report - Audio Locator
 
 ![[](doc_assets/Audio-locator-title.svg](doc_assets/Audio-locator-title.svg)
 
