@@ -1,3 +1,6 @@
+// provided code by course "making embedded systems"
+// slightly modified for this project by Constantin Wolf
+
 // Console is the generic interface to the command line.
 // These functions should not need signficant modification, only
 // to be called from the normal loop. Note that adding commands should
@@ -111,7 +114,12 @@ void ConsoleInit(void)
 	uint32_t i;
 
 	ConsoleIoInit();
-	ConsoleIoSendString("Welcome to the Consolinator, your gateway to testing code and hardware.");
+	ConsoleIoSendString(STR_ENDLINE);
+	ConsoleIoSendString("╭─── AUDIO LOCATOR ───────────────────────────╮\r\n");
+	ConsoleIoSendString("│ Locates sounds in 2D space                  │\r\n");
+	ConsoleIoSendString("│                                             │\r\n");
+	ConsoleIoSendString("│ Enter `help` for more commands              │\r\n");
+	ConsoleIoSendString("╰─────────────────────────────────────────────╯\r\n");
 	ConsoleIoSendString(STR_ENDLINE);
 	ConsoleIoSendString(CONSOLE_PROMPT);
 	mReceivedSoFar = 0u;

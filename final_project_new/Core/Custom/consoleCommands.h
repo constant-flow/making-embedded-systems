@@ -1,3 +1,5 @@
+// provided code by course "making embedded systems"
+// slightly modified for this project by Constantin Wolf
 
 // The console command interface is generally used only by console.c, 
 // if you want to add a command, go to consoleCommands.c

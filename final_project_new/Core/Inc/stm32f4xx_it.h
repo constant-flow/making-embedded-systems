@@ -1,3 +1,6 @@
+// provided code by CubeMX generator, modified to work with BSP
+// slightly modified for this project by Constantin Wolf
+
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************

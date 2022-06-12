@@ -1,13 +1,18 @@
+/**
+ ******************************************************************************
+ * @file           : al_direction.h
+ * @brief          : Processes PCM stream into direction of the loudest sound
+ *                   above a definable threshold
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #if !defined(HEADER_AL_DIRECTION)
 #define HEADER_AL_DIRECTION
 
 #include "al_mics.h"
 
 // available tracking modes
-// 2D: track in plane
-// 3D: track in space
-//
-// use type tracking_mode
 enum al_tracking_mode
 {
     MODE_UNINITIALIZED = 0,

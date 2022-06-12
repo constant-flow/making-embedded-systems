@@ -1,3 +1,6 @@
+// provided code by course "making embedded systems"
+// slightly modified for this project by Constantin Wolf
+
 // Console is the generic interface to the command line. 
 // These functions should not need signficant modification, only 
 // to be called from the normal loop. Note that adding commands should 

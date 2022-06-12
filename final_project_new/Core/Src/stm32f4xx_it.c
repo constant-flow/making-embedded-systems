@@ -273,6 +273,7 @@ void DSI_IRQHandler(void)
   /* USER CODE END DSI_IRQn 1 */
 }
 
+// Constantin Wold added these to interact with I2S/SAI
 void AUDIO_I2Sx_DMAx_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(haudio_in_i2s.hdmarx);

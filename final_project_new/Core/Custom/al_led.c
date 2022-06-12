@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_led.h
+ * @brief          : Handles the onboard LEDs
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_led.h"
 #include "stm32469i_discovery.h"
 

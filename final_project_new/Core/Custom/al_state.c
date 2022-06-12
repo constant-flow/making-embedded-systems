@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_state.c
+ * @brief          : Statemachine to toggle between tracking modes
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_state.h"
 
 struct audio_locator_state

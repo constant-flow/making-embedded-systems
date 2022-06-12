@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_led.c
+ * @brief          : Handles the onboard LEDs
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #if !defined(HEADER_AL_LED)
 #define HEADER_AL_LED
 

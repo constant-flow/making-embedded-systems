@@ -1,21 +1,47 @@
+/**
+ ******************************************************************************
+ * @file           : al_direction.c
+ * @brief          : Processes PCM stream into direction of the loudest sound
+ *                   above a definable threshold
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_direction.h"
-#include "arm_math.h"
 #include "al_logging.h"
+
+#include "arm_math.h"
 #include "main.h"
 
+/*****************************************************************************/
+// Debugging parameters
+/*****************************************************************************/
+// test output without audio processing for debugging the visual output
+// #define USE_GENERATED_SINE_INPUT
+
+// halts the process after first correlation, to enable complex console prints
+// #define HALT_AFTER_FIRST_SAMPLE
+/*****************************************************************************/
+
+// correlation threshold
 #define MIN_DETECTION_THRESHOLD 0.1f
 #define MAX_DETECTION_THRESHOLD 5.0f
 
-static tracking_dir last_dir = {0.0f, 0.0f, 0.0f, MODE_UNINITIALIZED};
-static mics_pcm_frame *audio_frame;
 
+static tracking_dir tracking_result = {0.0f, 0.0f, 0.0f, MODE_UNINITIALIZED};
+
+// Incoming pcm data of both microphones
+static mics_pcm_frame *microphones_pcm_data;
+
+// Currently set threshold to overcome to be detected
 static float detection_threshold = MIN_DETECTION_THRESHOLD;
-static float angle_target = 0;
-static float angle_target_smoothing = 0.995f;
-static float angle_smoothed = 0;
 
-// #define USE_GENERATED_SINE_INPUT
-// #define HALT_AFTER_FIRST_SAMPLE
+// Last angle towards signal
+static float angle_target = 0;
+// Smoothed angle towards signal
+static float angle_smoothed = 0;
+// Smoothening factor to reduce jitter
+static float angle_target_smoothing = 0.99f;
 
 // distance between microphones in cm
 #define MICS_DISTANCE 12.4f
@@ -27,8 +53,13 @@ static float angle_smoothed = 0;
 // how far (in cm) did a soundwave travel one sample later ()
 #define DIST_BETWEEN_SAMPLES ((float)SPEED_OF_SOUND / DEFAULT_AUDIO_IN_FREQ)
 
+// buffer for the correlation results
 #define CORR_BUF_SIZE (PCM_BUF_SIZE_HALF * 2 - 1)
 
+// holds multiple infos about the correlation: 
+//  - phase shift between signals
+//  - max correlation between signals
+//  - mid of the buffer 
 typedef struct pcm_correlation
 {
     int16_t max_shift_samples; // how many samples were the the two signals phase shifted
@@ -42,9 +73,10 @@ static float32_t channel_right[PCM_BUF_SIZE_HALF];
 static float32_t channel_left[PCM_BUF_SIZE_HALF];
 static float32_t result_corr[CORR_BUF_SIZE];
 
+// returns the tracking result
 tracking_dir *direction_get()
 {
-    return &last_dir;
+    return &tracking_result;
 }
 
 inline float toFloat(uint16_t val)
@@ -52,6 +84,7 @@ inline float toFloat(uint16_t val)
     return ((float32_t)val) / ((float32_t)UINT16_MAX) - 0.5f;
 }
 
+// splits input audio from interleaved uint16_t signal into two float buffers
 void calc_float_channels(mics_pcm_frame *input)
 {
     for (int i = 0; i < PCM_BUF_SIZE_HALF; i++)
@@ -60,9 +93,9 @@ void calc_float_channels(mics_pcm_frame *input)
         channel_right[i] = toFloat(input->samples[i * 2 + 1]);
         // logging_log("%d : %f\t|\t%d : %f", input->samples[i * 2], channel_left[i], input->samples[i * 2 + 1], channel_right[i]);
     }
-    // logging_log("@@@");
 }
 
+// checks the input for loud enough correlation and if so, updates the corr object
 void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
 {
     calc_float_channels(input);
@@ -82,7 +115,6 @@ void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
             max_corr_value = result_corr[i];
         }
     }
-    // logging_log("---");
 
     if (max_corr_value > detection_threshold)
     {
@@ -94,10 +126,10 @@ void get_correlation(mics_pcm_frame *input, pcm_correlation *corr)
 
 void direction_init()
 {
-    last_dir.x = 1;
-    last_dir.y = 0;
-    last_dir.z = 0;
-    last_dir.mode = MODE_SCREEN_FRONT;
+    tracking_result.x = 1;
+    tracking_result.y = 0;
+    tracking_result.z = 0;
+    tracking_result.mode = MODE_SCREEN_FRONT;
     corr.mid_id = CORR_BUF_SIZE / 2;
 }
 
@@ -105,12 +137,12 @@ void direction_update()
 {
 #ifdef USE_GENERATED_SINE_INPUT
     float time = HAL_GetTick() / 1000.f;
-    last_dir.x = sin(time);
-    last_dir.y = cos(time);
+    tracking_result.x = sin(time);
+    tracking_result.y = cos(time);
     return;
 #endif
 
-    get_correlation(audio_frame, &corr);
+    get_correlation(microphones_pcm_data, &corr);
 
     // keep in bounds (-90° to 90°)
     int16_t shifted_sample_amount = corr.max_shift_samples - corr.mid_id;
@@ -129,8 +161,8 @@ void direction_update()
 
     angle_smoothed = angle_target * (1 - angle_target_smoothing) + angle_smoothed * angle_target_smoothing;
 
-    last_dir.x = sin(angle_smoothed);
-    last_dir.y = cos(angle_smoothed);
+    tracking_result.x = sin(angle_smoothed);
+    tracking_result.y = cos(angle_smoothed);
 
 #ifdef HALT_AFTER_FIRST_SAMPLE
     static int halt_after_sample = 0;
@@ -141,7 +173,7 @@ void direction_update()
 
 void direction_input(mics_pcm_frame *input)
 {
-    audio_frame = input;
+    microphones_pcm_data = input;
 }
 
 void direction_set_threshold(uint8_t threshold)
@@ -152,5 +184,5 @@ void direction_set_threshold(uint8_t threshold)
 
 void direction_set_tracking_mode(enum al_tracking_mode mode)
 {
-    last_dir.mode = mode;
+    tracking_result.mode = mode;
 }

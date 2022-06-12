@@ -1,3 +1,6 @@
+// provided code by course "making embedded systems"
+// slightly modified for this project by Constantin Wolf
+
 // Console IO is a wrapper between the actual in and output and the console code
 
 #ifndef CONSOLE_IO_H

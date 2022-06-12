@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_logging.c
+ * @brief          : Handles logging to UART
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_logging.h"
 
 static char buffer[256];

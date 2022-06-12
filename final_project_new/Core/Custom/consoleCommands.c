@@ -1,3 +1,6 @@
+// provided code by course "making embedded systems"
+// slightly modified for this project by Constantin Wolf
+
 // ConsoleCommands.c
 // This is where you add commands:
 //		1. Add a protoype
@@ -27,10 +30,10 @@ static eCommandResult_T ConsoleCommandMode(const char buffer[]);
 
 static const sConsoleCommandTable_T mConsoleCommandTable[] =
 	{
-		{"help", &ConsoleCommandHelp, HELP("Lists the commands available")},
-		{"ver", &ConsoleCommandVer, HELP("Get the version string")},
+		{"help     ", &ConsoleCommandHelp, HELP("Lists the commands available")},
+		{"ver      ", &ConsoleCommandVer, HELP("Get the version string")},
 		{"threshold", &ConsoleCommandSetDetectorThreshold, HELP("Set detector sensitivity form 0-255")},
-		{"mode", &ConsoleCommandMode, HELP("Switch between In-PCB-Plane-Tracking / In-Front-Of-Display-Tracking: `1` for PCB, `2` for In-Front")},
+		{"mode     ", &ConsoleCommandMode, HELP("Switch between In-PCB-Plane-Tracking / In-Front-Of-Display-Tracking: `1` for PCB, `2` for In-Front")},
 
 		CONSOLE_COMMAND_TABLE_END // must be LAST
 };

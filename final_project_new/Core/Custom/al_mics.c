@@ -1,25 +1,42 @@
+/**
+ ******************************************************************************
+ * @file           : al_mics.c
+ * @brief          : PDM Microphone capturing and conversion to PCM
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_mics.h"
 #include "al_logging.h"
 #include "pdm2pcm.h"
 
 // helpful ressource https://www.youtube.com/watch?v=zlGSxZGwj-E
 
+/*****************************************************************************/
+// Used to verify correlation is working with synthetic pcm data
+// #define USE_GENERATED_MIC_INPUT
+/*****************************************************************************/
+
 #define PCM_SLOTS 2
 
+// input from stereo mems mic in PDM
 uint16_t pdm_buffer[PDM_BUF_SIZE];
+
+// converted from pdm to pcm
 uint16_t pcm_buffer[PCM_BUF_SIZE * PCM_SLOTS];
 
+// pointers/index for double bufferung
 uint16_t *pdm_buffer_head = pdm_buffer;
 uint16_t *pcm_buffer_head = pcm_buffer;
 uint16_t pcm_buffer_head_index = 0;
 
+// data frame to pass
 static mics_pcm_frame frame_current;
 
+// status flags
 volatile uint8_t data_ready = 0;
 volatile uint8_t playing = 0;
 volatile uint8_t new_result = 0;
-
-// #define USE_GENERATED_MIC_INPUT
 
 void process_data()
 {
@@ -50,6 +67,7 @@ void process_data()
     pcm_buffer_head = &pcm_buffer[pcm_buffer_head_index];
 }
 
+// generates pcm_data for L/R channel to test correlation
 void setup_input_from_generator()
 {
     const uint16_t CHANNEL_L = 0;
@@ -110,11 +128,13 @@ void mics_init()
     frame_current.count = PCM_BUF_SIZE;
     frame_current.samples = pcm_buffer_head;
 
+    // use audio output for testing the audio quality
     if (AUDIO_OK != BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_HEADPHONE, 70, DEFAULT_AUDIO_IN_FREQ))
     {
         Error_Handler();
     }
 
+    // required to get L/R disconnected in audible headphone output
     BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
 
 #ifdef USE_GENERATED_MIC_INPUT
@@ -124,26 +144,20 @@ void mics_init()
 #endif
 }
 
+// ping-pong input buffer half 1
 void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 {
     data_ready = 1;
     pdm_buffer_head = &pdm_buffer[PDM_BUF_SIZE_HALF];
-    process_data();
-    // pcm_buffer_head = &pcm_buffer[PCM_BUF_SIZE_HALF];
+    process_data(); // putting this into ther interrupt lead to better quality
 }
 
+// ping-pong input buffer half 2
 void BSP_AUDIO_IN_TransferComplete_CallBack()
 {
     data_ready = 2;
     pdm_buffer_head = &pdm_buffer[0];
-    process_data();
-    // pcm_buffer_head = &pcm_buffer[0];
-}
-
-void mics_update()
-{
-    // logging_log("Mics: ✅ rec");
-    process_data();
+    process_data(); // putting this into ther interrupt lead to better quality
 }
 
 mics_pcm_frame *mic_get_sample()

@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_main.c
+ * @brief          : Main business logic of audio locator
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_main.h"
 
 #include "al_button.h"
@@ -32,9 +40,9 @@ void al_init()
 
 void al_loop()
 {
-    mics_update();
     pcm_frame = mic_get_sample();
-    if(pcm_frame->is_new_sample) {
+    if (pcm_frame->is_new_sample)
+    {
         display_set_audio(pcm_frame);
         direction_input(pcm_frame);
         direction_update();
@@ -52,7 +60,7 @@ void handle_state()
     if (state_changed_tracking_mode())
     {
         state_processed_tracking_mode_change();
-        logging_log("Changed to %dD mode", state_get_tracking_mode());
+        logging_log("Changed to tracking mode: %d", state_get_tracking_mode());
         direction_set_tracking_mode(state_get_tracking_mode());
 
         // Show state via LED // TODO make led code independent via al_led.h

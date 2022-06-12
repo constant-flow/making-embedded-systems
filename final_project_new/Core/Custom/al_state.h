@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_state.h
+ * @brief          : Statemachine to toggle between tracking modes
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #if !defined(HEADER_AL_STATE)
 #define HEADER_AL_STATE
 

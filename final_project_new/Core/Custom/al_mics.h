@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_mics.h
+ * @brief          : PDM Microphone capturing and conversion to PCM
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #if !defined(HEADER_AL_MICS)
 #define HEADER_AL_MICS
 
@@ -15,7 +23,6 @@
 #define PCM_BUF_SIZE_HALF (PCM_BUF_SIZE / 2)
 
 void mics_init();
-void mics_update();
 
 struct al_mic_pcm_frame
 {

@@ -3,6 +3,7 @@
   ******************************************************************************
   * @file           : main.c
   * @brief          : Main program body
+  * @author         : generated mostly by CubeMX adjusted by Constantin Wolf
   ******************************************************************************
   * @attention
   *
@@ -57,30 +58,14 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  // MX_CRC_Init();
-  // MX_DMA2D_Init();
-  // MX_DSIHOST_DSI_Init();
-  // MX_FMC_Init();
-  // MX_I2C1_Init();
-  // MX_I2C2_Init();
-  // MX_LTDC_Init();
-  // MX_QUADSPI_Init();
-  // MX_SAI1_Init();
-  // MX_SDIO_SD_Init();
-  // MX_TIM1_Init();
   MX_USART3_UART_Init();
-  // MX_USART6_UART_Init();
-  // MX_FATFS_Init();
-  // MX_PDM2PCM_Init();
-  // MX_USB_HOST_Init();
-
+  
   // User Code initialization
   al_init();  
 
   while (1)
   {  
     al_loop();
-    // MX_USB_HOST_Process();  
   }
 }
 

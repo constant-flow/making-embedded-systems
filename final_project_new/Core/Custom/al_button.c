@@ -1,9 +1,17 @@
+/**
+ ******************************************************************************
+ * @file           : al_button.c
+ * @brief          : Handles user button via Interrupt, calls registered 
+ *                   callback
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_button.h"
 #include "stm32f4xx_hal.h"
 #include "stm32469i_discovery.h"
 
-
-void (*button_callback)(void) = 0;
+static void (*button_callback)(void) = 0;
 
 void button_init(void (*callback)(void))
 {

@@ -1,66 +1,83 @@
+/**
+ ******************************************************************************
+ * @file           : al_display.c
+ * @brief          : Displays the tracking results for the different modes
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #include "al_display.h"
 #include "stm32469i_discovery_lcd.h"
 #include "stm32f4xx.h"
 #include "arm_math.h"
-// extern DSI_HandleTypeDef hdsi;
 
-static uint32_t LAYER0_ADDRESS = LCD_FB_START_ADDRESS;
+// current tracking result
+static tracking_dir *tracking = NULL;
 
-static tracking_dir *last_tracking = NULL;
+// visual parameters
 
+// where to draw the middle of the tracking result
 static int tracking_center_x = 0;
 static int tracking_center_y = 0;
+
+// indicator
 static int x = 80;
 static int y = 30;
+
+// indicator framing
 static int radius_indicator = 120;
 static int radius_cirle = 120;
 static int square_height = 60;
 static int square_indicator = 60;
+
+// tracking mode
 static int last_mode = 0;
 
+// color palette
 const static uint32_t AL_COLOR_HEADING_BACKGROUND = 0xff404040;
 const static uint32_t AL_COLOR_HEADING_TEXT = 0xffFFB100;
 const static uint32_t AL_COLOR_BACKGROUND = 0xff000000;
-const static uint32_t AL_COLOR_CIRCLE = 0xff808080;
+const static uint32_t AL_COLOR_FRAME = 0xff808080;
 const static uint32_t AL_COLOR_INDICATOR = 0xffFFB100;
 
-static int title_height = 80;
+// styling
 static int FONT_H = 24;
+static int title_height = 80;
 static int screen_width = 0;
 static int screen_height = 0;
 static int spacing = 20;
 
+// pcm data
 static mics_pcm_frame *pcm_frame;
 
-// private functions
-void display_draw_title();
+void display_draw_static_parts();
+void al_draw_audio(void);
 
-// function implementations
 void al_display_init()
 {
     BSP_LCD_Init();
 
+    // init vars to ease later drawing
     screen_width = BSP_LCD_GetXSize();
     screen_height = BSP_LCD_GetYSize();
-
     title_height = spacing * 2 + FONT_H;
-
     tracking_center_x = screen_width / 2;
     tracking_center_y = (screen_height - title_height) / 2 + title_height;
     radius_cirle = (screen_height - title_height - 2 * spacing) / 2;
     radius_indicator = radius_cirle - spacing;
     square_indicator = square_height - spacing;
 
-    BSP_LCD_LayerDefaultInit(0, LAYER0_ADDRESS);
+    // define layer to draw at
+    BSP_LCD_LayerDefaultInit(0, LCD_FB_START_ADDRESS);
     BSP_LCD_SelectLayer(0);
 
     BSP_LCD_SetFont(&Font24);
 
-    display_draw_title();
+    display_draw_static_parts();
 }
 
 // draws title of the app
-void display_draw_title()
+void display_draw_static_parts()
 {
     // HEADING
     BSP_LCD_SetTextColor(AL_COLOR_HEADING_BACKGROUND);
@@ -68,34 +85,37 @@ void display_draw_title()
 
     BSP_LCD_SetBackColor(AL_COLOR_HEADING_BACKGROUND);
     BSP_LCD_SetTextColor(AL_COLOR_HEADING_TEXT);
-    BSP_LCD_DisplayStringAt(spacing, (title_height - FONT_H) / 2, (uint8_t *)"Audio Locator v.01", LEFT_MODE);
+    BSP_LCD_DisplayStringAt(spacing, (title_height - FONT_H) / 2, (uint8_t *)"Audio Locator v2.0", LEFT_MODE);
 
     // TRACKING AREA
     BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
     BSP_LCD_FillRect(0, title_height, screen_width, screen_height);
 
-    if (last_tracking->mode == MODE_PCB_PLANE)
+    if (tracking->mode == MODE_PCB_PLANE)
     {
         // CIRCLE
-        BSP_LCD_SetTextColor(AL_COLOR_CIRCLE);
+        BSP_LCD_SetTextColor(AL_COLOR_FRAME);
         BSP_LCD_DrawCircle(tracking_center_x, tracking_center_y, radius_cirle);
 
         BSP_LCD_SetTextColor(AL_COLOR_HEADING_TEXT);
         BSP_LCD_SetBackColor(AL_COLOR_BACKGROUND);
         BSP_LCD_DisplayStringAt(spacing, (title_height + FONT_H * 1.0f), (uint8_t *)"PCB plane mode", LEFT_MODE);
+    }
 
-    } else if(last_tracking->mode == MODE_SCREEN_FRONT) {
-        
+    else if (tracking->mode == MODE_SCREEN_FRONT)
+    {
         // Square
-        BSP_LCD_SetTextColor(AL_COLOR_CIRCLE);
-        BSP_LCD_DrawRect(tracking_center_x - radius_cirle, tracking_center_y - square_height/2, radius_cirle*2, square_height); 
+        BSP_LCD_SetTextColor(AL_COLOR_FRAME);
+        BSP_LCD_DrawRect(tracking_center_x - radius_cirle, tracking_center_y - square_height / 2, radius_cirle * 2, square_height);
 
-        for(int i=0; i<180; i+=5) {
-            float angle = i/180.0f*PI;
-            int x_tick = cos(angle)*radius_cirle + tracking_center_x;
-            int y_tick = tracking_center_y + square_height/2;
-            BSP_LCD_DrawLine(x_tick,y_tick, x_tick, y_tick - spacing/2);   
-            BSP_LCD_DrawLine(x_tick,y_tick-square_height, x_tick, y_tick - square_height+spacing/2);   
+        // draw ticks to get a bit of a 3d effect
+        for (int i = 0; i < 180; i += 5)
+        {
+            float angle = i / 180.0f * PI;
+            int x_tick = cos(angle) * radius_cirle + tracking_center_x;
+            int y_tick = tracking_center_y + square_height / 2;
+            BSP_LCD_DrawLine(x_tick, y_tick, x_tick, y_tick - spacing / 2);
+            BSP_LCD_DrawLine(x_tick, y_tick - square_height, x_tick, y_tick - square_height + spacing / 2);
         }
 
         BSP_LCD_SetTextColor(AL_COLOR_HEADING_TEXT);
@@ -108,42 +128,47 @@ int frame = 0;
 
 void al_display_update()
 {
-    if(frame++%10 != 0) return;
-    if(last_mode != last_tracking->mode) {
-        display_draw_title();
+    // drop frames to get load of the screen refresh
+    if (frame++ % 10 != 0)
+        return;
+    if (last_mode != tracking->mode)
+    {
+        display_draw_static_parts();
     }
 
-    if (last_tracking->mode == MODE_PCB_PLANE)
+    if (tracking->mode == MODE_PCB_PLANE)
     {
         // clear last line with BG color
         BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
         BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
 
         // calculate/draw new indicator direction
-        x = last_tracking->x * radius_indicator;
-        y = last_tracking->y * radius_indicator;
+        x = tracking->x * radius_indicator;
+        y = tracking->y * radius_indicator;
         BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
         BSP_LCD_DrawLine(tracking_center_x, tracking_center_y, tracking_center_x + x, tracking_center_y + y);
-
-    } else if(last_tracking->mode == MODE_SCREEN_FRONT) {
+    }
+    else if (tracking->mode == MODE_SCREEN_FRONT)
+    {
         // clear last line with BG color
         int line_half_height = square_indicator / 2;
         BSP_LCD_SetTextColor(AL_COLOR_BACKGROUND);
         BSP_LCD_DrawLine(tracking_center_x + x, tracking_center_y - line_half_height, tracking_center_x + x, tracking_center_y + line_half_height);
-        
+
         // calculate/draw new indicator direction
-        x = last_tracking->x * radius_indicator;
-        y = last_tracking->y * radius_indicator;
+        x = tracking->x * radius_indicator;
+        y = tracking->y * radius_indicator;
         BSP_LCD_SetTextColor(AL_COLOR_INDICATOR);
         BSP_LCD_DrawLine(tracking_center_x + x, tracking_center_y - line_half_height, tracking_center_x + x, tracking_center_y + line_half_height);
     }
 
-    last_mode = last_tracking->mode;
+    last_mode = tracking->mode;
 
     // al_draw_audio();
 }
 
-int cnt = 0;
+static int cnt = 0;
+// prints pcm data as a wave form
 void al_draw_audio(void)
 {
     if (cnt % 1000 != 0)
@@ -165,14 +190,6 @@ void al_draw_audio(void)
 
     for (int i = 0; i < pcm_frame->count; i++)
     {
-        if (pcm_frame->pdm_samples[i] != 0)
-        {
-            // pcm_frame->pdm_samples[i]; // checks if PDM is anything but 0, so far not :(
-        }
-    }
-
-    for (int i = 0; i < pcm_frame->count; i++)
-    {
         // uint16_t y_end = y + (uint16_t)((pcm_frame->pdm_samples[i] / (float)UINT16_MAX) * audio_area_h); // raw PDM data
         uint16_t y_end = y + (uint16_t)((pcm_frame->samples[i] / (float)UINT16_MAX) * audio_area_h); // PCM data
         if (y_end < 0)
@@ -182,15 +199,13 @@ void al_draw_audio(void)
             y_end = 480;
 
         BSP_LCD_DrawLine(x, y, x, y_end);
-        // BSP_LCD_DrawLine(x + 1, y, x + 1, y_end);
-        // BSP_LCD_DrawLine(x - 1, y, x - 1, y_end);
         x += gap;
     }
 }
 
 void display_set_tracking(tracking_dir *dir)
 {
-    last_tracking = dir;
+    tracking = dir;
 }
 
 void display_set_audio(mics_pcm_frame *new_pcm_frame)

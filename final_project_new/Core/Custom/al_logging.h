@@ -1,3 +1,11 @@
+/**
+ ******************************************************************************
+ * @file           : al_logging.h
+ * @brief          : Handles logging to UART
+ * @author         : Constantin Wolf
+ ******************************************************************************
+ */
+
 #if !defined(HEADER_AL_LOGGING)
 #define HEADER_AL_LOGGING
 
