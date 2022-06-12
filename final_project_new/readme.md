@@ -150,8 +150,8 @@ This project is based on existing code libraries, when using this project please
 - [Middleware – BSD-3-Clause & ST-SLA0044](https://www.st.com/content/ccc/resource/legal/legal_agreement/license_agreement/group0/59/57/63/12/cf/a6/47/65/SLA0044/files/SLA0044.txt/jcr:content/translations/en.SLA0044.txt)
 - [PDM2PCM - ST-SLA0047](https://www.st.com/content/ccc/resource/legal/legal_agreement/license_agreement/group0/73/b4/79/b9/5a/e6/4a/9e/SLA0047/files/SLA0047.txt/jcr:content/translations/en.SLA0047.txt)
 
----
-
-<!-- # Troubles
-## Tasks to complete
-## Blocking items -->
+### Power analysis
+- As the project is generated via CubeMX with its default pin/peripheral settings, this is not optimized for power yet.
+- All unused peripherals / modules / pins could be disabled an set to a lower level of consumption
+- As the system aims for fast detection it's not recommended to use sleep modes or less sampling as this would reduce the quality of the tracking. Only if the sound to be detected has an expected minimum time the sampling could be reduced to still capture most of the target sound.
+- Beside the power analysis of CubeMx, the system could be monitored via an USB power monitor or by simply recording the current by plugging an amp-meter into the powering line (Voltage of USB or 3.3V are known).
