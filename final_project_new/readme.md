@@ -1,6 +1,6 @@
 # Project Report - Audio Locator
 
-![[](doc_assets/Audio-locator-title.svg](doc_assets/Audio-locator-title.svg)
+![](doc_assets/Audio-locator-title.svg)
 
 ## Application description
 The Audio-Locator can calculate a dimensional direction towards an audio signal (voice, clap, beep). The device will point with a displayed graphic (In-PCB-plane-mode: compass needle, In-Front-of-screen-mode: Line indicating direction out of the screen) on an LCD towards the origin of the most recent loud sound.
@@ -49,7 +49,7 @@ All major modules are packed into separate files `al_module.c/h`
 
  `Logging / Console`
 > Handles logging to UART, Handle Serial IO to control parameters (Console part is mostly provided code that was adjusted for custom commands). Custom commands: `Threshold (0 - 255)` 0 = most sounds are detected, 255 = loud sounds are detected. `Ver` prints the version number. `mode (0,1)` toggles to `0` = in-PCB-plane-tracking, `1` = in-front-of-screen-tracking.
-> 
+
  `Mics`
  > Pulse-Density-Modulation (**PDM**) Microphone capturing and conversion to Pulse-Code-Modulation (**PCM**) format. Uses DMA to capture stereo PDM data from two microphones. ST Library PDM2PCM is used to convert to PCM audio. For debugging SAI is used to stream the PCM to an audio codec which sends the signal to the headphone jack.
 
