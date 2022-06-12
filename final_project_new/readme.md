@@ -5,7 +5,12 @@
 ## Application description
 The Audio-Locator can calculate a dimensional direction towards an audio signal (voice, clap, beep). The device will point with a displayed graphic (In-PCB-plane-mode: compass needle, In-Front-of-screen-mode: Line indicating direction out of the screen) on an LCD towards the origin of the most recent loud sound.
 
-`TODO: ADD video`
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=gMlVorJwr0Y"><img src="doc_assets/yt-thumb.png" width="50%" alt="IMAGE ALT TEXT">
+  <br>
+  https://www.youtube.com/watch?v=gMlVorJwr0Y</a>
+  
+</div>
 
 ## Hardware description
 The device uses up to two MEMS microphones to locate the loudest sound in hearable proximity

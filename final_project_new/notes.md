@@ -39,3 +39,9 @@ void AUDIO_I2Sx_DMAx_IRQHandler(void)
   HAL_DMA_IRQHandler(haudio_in_i2s.hdmarx);
 }
 ```
+
+Audio Locator – Final submission – Making Embedded Systems 
+
+This is a video of my project for the course "Making Embedded Systems".
+
+It's an audio source locator that uses 2 PDM microphones calculate the direction where the sound came from. The video goes a bit into detail how the process is done, do go into more detail check the code
